@@ -1,0 +1,14 @@
+{
+  "name": "CPSV-Spawn",
+  "namemsg": "cpsv-spawn-extensionname",
+  "version": "0.1",
+  "author": "David Bromoiras",
+  "url": "https://www.gitlab.com/anchor-web/eellak_diadikasies_spawn_cpsv/",
+  "descriptionmsg": "CPSV-spawn-desc",
+  "type": "other",
+  "licence-name": "GPL-3.0",
+  "requires": {
+    "MediaWiki": ">= 1.25"
+ },
+ "manifest_version": 1
+}
