@@ -20,8 +20,11 @@ class CPSVSpawn{
   public static function onPageContentSaveComplete($article, $user, $content, $summary, $isMinor, $isWatch, $section, $flags, $revision, $status, $baseRevId) {    
   
 		wfMessage('the class has loaded')->text();
-		$article_title=Title::newFromText('dave'.rand(4, 1000000), NS_MAIN);
+		$article_title=Title::newFromText('dave');
+		$article_content=ContentHandler::makeContent('test content', $article_title);
 		$public_service_page=WikiPage::factory($article_title);
+		$test_user=User::newFromName('Mandravinus');
+//		$public_service_page->doEditContent($article_content, 'summary test', 0);
 		error_log('mpainei mesa');
 		wfMessage('it is inside')->text();
 		return true;
