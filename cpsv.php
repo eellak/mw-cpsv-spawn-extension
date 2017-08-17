@@ -23,9 +23,11 @@ class CPSVSpawn{
 		$article_title=Title::newFromText('dave');
 		$article_content=ContentHandler::makeContent('test content', $article_title);
 		$public_service_page=WikiPage::factory($article_title);
-		$test_user=User::newFromName('Mandravinus');
-//		$public_service_page->doEditContent($article_content, 'summary test', 0);
+		//$test_user=User::newFromId(2);
 		error_log('mpainei mesa');
+		if($user){
+			$public_service_page->doEditContent($article_content, null, $flags, $baseRevId, $user);
+		}
 		wfMessage('it is inside')->text();
 		return true;
   }
