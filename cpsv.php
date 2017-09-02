@@ -65,6 +65,7 @@ class CPSVSpawn{
 		$content_text=ContentHandler::getContentText($content);
 		if($user){
 			$public_service_page->doEditContent($article_content, $content_text, $flags, $baseRevId, $user);
+			wfErrorLog($content_text, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
 		}
 		return true;
   }
