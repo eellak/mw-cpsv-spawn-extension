@@ -46,6 +46,7 @@ class CPSVSpawn{
 	
   public static function onPageContentSaveComplete($article, $user, $content, $summary, $isMinor, $isWatch, $section, $flags, $revision, $status, $baseRevId) {    
   
+		wfErrorLog('*****FLAGS'.$flags, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
 		
     $service_template_map=array();
 		$content_text=ContentHandler::getContentText($content);
@@ -57,10 +58,13 @@ class CPSVSpawn{
      */
     $tmpl_start=mb_strpos($content_text, '{{Καταχωρημένη Υπηρεσία', 0, 'UTF-8');
     $tmpl_end=mb_strpos($content_text, '}}');
-    
-    if(!is_null($tmpl_start) && (self::$g_article_id===-1 || self::$g_article_id!=$article->getId()) && $flags===1){ //	EDIT_NEW
+		
+		/**
+		 * Check if article is the same that triggered the PageContentSaveCommplete event
+		 */
+    if(!is_null($tmpl_start) && (self::$g_article_id===-1 || self::$g_article_id!=$article->getId()) && $flags===1+64){ //	EDIT_NEW + EDIT_AUTOSUMMARY
 			self::$g_article_id=$article->getId();
-      $service_template_map=preg_split("/\\r\\n|\\r|\\n/", $content_text);
+      $service_template_map=preg_split("/\|/", $content_text); // The starting character for each template line
       if (sizeof($service_template_map)){
         wfErrorLog('*****size of map'.sizeof($service_template_map), '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
       }
