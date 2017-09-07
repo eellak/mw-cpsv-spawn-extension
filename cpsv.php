@@ -50,8 +50,26 @@ class CPSVSpawn{
 		
     $service_template_map=array();
 		$content_text=ContentHandler::getContentText($content);
-  
-    $service_description_value;
+		
+		/**
+		 * The values parsed from the input template in ordered to be processed.
+		 */
+		
+    $input_service_identifier_value='';
+    $input_service_name_value='';
+    $input_service_description_value='';
+    $input_service_competent_authority_value='';
+    $input_service_provided_by_value='';
+    $input_service_formal_framework_value='';
+    $input_service_input_value='';
+    $input_service_output_value='';
+    $input_service_cost_value='';
+    $input_service_completion_time_value='';
+    $input_service_related_services_value='';
+    $input_service_related_organizations_value='';
+    $input_service_keywords_value='';
+    $input_service_public_service_reference_value='';
+		
     
     /**
      * Cut out the template to parse its contents line by line
@@ -75,11 +93,73 @@ class CPSVSpawn{
         /**
          * Check that the template field has indeed been 
          */
+				if(mb_stristr($map_entry, "input_service_identifier", false, 'UTF-8')){
+					
+				}
+				
+				if(mb_stristr($map_entry, "input_service_name", false, 'UTF-8')){
+					
+				}
+				
         if(mb_stristr($map_entry, "input_service_description", false, 'UTF-8')){
           $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
-          $service_description_value="== Περιγραφη Υπηρεσιας == ".PHP_EOL.$tmpl_value.PHP_EOL;
-          wfErrorLog("Περιγραφη Υπηρεσιας => ".$service_description_value, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
+          $input_service_description_value="== Περιγραφη Υπηρεσιας == ".PHP_EOL.$tmpl_value.PHP_EOL;
+          wfErrorLog("Περιγραφη Υπηρεσιας => ".$input_service_description_value, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
         }
+				
+				if(mb_stristr($map_entry, "input_service_competent_authority", false, 'UTF-8')){
+          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+					
+				}
+				
+				if(mb_stristr($map_entry, "input_service_provided_by", false, 'UTF-8')){
+          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+					
+				}
+				
+				if(mb_stristr($map_entry, "input_service_formal_framework", false, 'UTF-8')){
+          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+					
+				}
+				
+				if(mb_stristr($map_entry, "input_service_input", false, 'UTF-8')){
+          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+					
+				}
+				
+				if(mb_stristr($map_entry, "input_service_output", false, 'UTF-8')){
+          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+					
+				}
+				
+				if(mb_stristr($map_entry, "input_service_completion_time", false, 'UTF-8')){
+          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+					
+				}
+				
+				if(mb_stristr($map_entry, "input_service_related_services", false, 'UTF-8')){
+          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+					
+				}
+				
+				if(mb_stristr($map_entry, "input_service_related_organizations", false, 'UTF-8')){
+          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+					
+				}
+				
+				if(mb_stristr($map_entry, "input_service_keywords", false, 'UTF-8')){
+          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+					
+				}
+				
+				if(mb_stristr($map_entry, "input_service_public_service_reference", false, 'UTF-8')){
+          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+					
+				}
+//				
+//				if(mb_stristr($map_entry, "input_service_completion_time", false, 'UTF-8')){
+//					
+//				}
       }
       
       /**
@@ -99,7 +179,7 @@ class CPSVSpawn{
       //$public_service_page=WikiPage::factory($article_title);
       //$test_user=User::newFromId(2);
 
-  		$content_text=$content_text.$service_description_value;
+  		$content_text=$content_text.$input_service_description_value;
       if($user){
 //        $public_service_page->doEditContent($article_content, $content_text, $flags, $baseRevId, $user);
 //				ContentHandler::makeContent($content_text, $article->getTitle());
