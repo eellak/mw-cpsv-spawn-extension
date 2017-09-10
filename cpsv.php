@@ -44,12 +44,25 @@ class CPSVSpawn{
 //	private $g_user;
 //	private $g_content;
 	
+	
   public static function onPageContentSaveComplete($article, $user, $content, $summary, $isMinor, $isWatch, $section, $flags, $revision, $status, $baseRevId) {    
   
 		wfErrorLog('*****FLAGS'.$flags, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
 		
     $service_template_map=array();
 		$content_text=ContentHandler::getContentText($content);
+		
+		/**
+		 * Variables that hold the template serialized contents as strings.
+		 * They are used to create the new WikiPages for each additional entity
+		 * where necessary
+		 */
+		$diadikasies_page_serialized_template="{{";
+		$cpsv_public_service_serialized_template="{{";
+		$cpsv_evidence_serialized_template="{{";
+		$cpsv_cost_serialized_template="{{";
+		$cpsv_formal_framework_serialized_template="{{";
+		$cpsv_public_organization_serialized_template="{{";
 		
 		/**
 		 * The values parsed from the input template in ordered to be processed.
@@ -61,7 +74,9 @@ class CPSVSpawn{
     $input_service_competent_authority_value='';
     $input_service_provided_by_value='';
     $input_service_formal_framework_value='';
+		$input_formal_framework_description_value='';
     $input_service_input_value='';
+		$input_service_input_description_value='';
     $input_service_output_value='';
     $input_service_cost_value='';
     $input_service_completion_time_value='';
@@ -69,10 +84,13 @@ class CPSVSpawn{
     $input_service_related_organizations_value='';
     $input_service_keywords_value='';
     $input_service_public_service_reference_value='';
+		$input_service_registry_value='';
+		$input_service_registry_description_value='';
+	
 		
     
     /**
-     * Cut out the template to parse its contents line by line
+     * Cut out the Service template to parse its contents line by line
      */
     $tmpl_start=mb_strpos($content_text, '{{Καταχωρημένη Υπηρεσία', 0, 'UTF-8');
     $tmpl_end=mb_strpos($content_text, '}}');
@@ -90,14 +108,19 @@ class CPSVSpawn{
       foreach($service_template_map as $map_entry){
         
         $i=0;
+				
         /**
          * Check that the template field has indeed been 
          */
 				if(mb_stristr($map_entry, "input_service_identifier", false, 'UTF-8')){
+					$diadikasies_page_serialized_template.=$map_entry;
+					$cpsv_public_service_serialized_template.=$map_entry;
 					
 				}
 				
 				if(mb_stristr($map_entry, "input_service_name", false, 'UTF-8')){
+					$diadikasies_page_serialized_template.=$map_entry;
+					$cpsv_public_service_serialized_template.=$map_entry;
 					
 				}
 				
@@ -108,21 +131,33 @@ class CPSVSpawn{
         }
 				
 				if(mb_stristr($map_entry, "input_service_competent_authority", false, 'UTF-8')){
+					$diadikasies_page_serialized_template.=$map_entry;
+          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+          $input_service_description_value="== Περιγραφη Υπηρεσιας == ".PHP_EOL.$tmpl_value.PHP_EOL;
+          wfErrorLog("Περιγραφη Υπηρεσιας => ".$input_service_description_value, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
           $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
 					
 				}
 				
 				if(mb_stristr($map_entry, "input_service_provided_by", false, 'UTF-8')){
+					$diadikasies_page_serialized_template.=$map_entry;
           $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
 					
 				}
 				
 				if(mb_stristr($map_entry, "input_service_formal_framework", false, 'UTF-8')){
+					$diadikasies_page_serialized_template.=$map_entry;
           $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
 					
 				}
 				
 				if(mb_stristr($map_entry, "input_service_input", false, 'UTF-8')){
+          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+					
+				}
+				
+				if(mb_stristr($map_entry, "input_service_cost", false, 'UTF-8')){
+					$diadikasies_page_serialized_template.=$map_entry;
           $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
 					
 				}
@@ -133,6 +168,7 @@ class CPSVSpawn{
 				}
 				
 				if(mb_stristr($map_entry, "input_service_completion_time", false, 'UTF-8')){
+					$diadikasies_page_serialized_template.=$map_entry;
           $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
 					
 				}
@@ -148,6 +184,26 @@ class CPSVSpawn{
 				}
 				
 				if(mb_stristr($map_entry, "input_service_keywords", false, 'UTF-8')){
+          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+					
+				}
+				
+				if(mb_stristr($map_entry, "input_service_public_service_reference", false, 'UTF-8')){
+          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+					
+				}
+				
+				if(mb_stristr($map_entry, "input_service_formal_framework_description", false, 'UTF-8')){
+          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+					
+				}
+				
+				if(mb_stristr($map_entry, "input_service_registry", false, 'UTF-8')){
+          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+					
+				}
+				
+				if(mb_stristr($map_entry, "input_service_registry_description", false, 'UTF-8')){
           $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
 					
 				}
@@ -195,4 +251,9 @@ class CPSVSpawn{
 		
     return true;
   }
+	
+	private static function template_string_append_closing_braces($template_serialized_string){
+		$template_serialized_string.='}}';
+	}
+	
 }
