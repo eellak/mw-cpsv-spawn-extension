@@ -47,7 +47,7 @@ class CPSVSpawn{
 	
   public static function onPageContentSaveComplete($article, $user, $content, $summary, $isMinor, $isWatch, $section, $flags, $revision, $status, $baseRevId) {    
   
-		wfErrorLog('*****FLAGS'.$flags, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
+		//wfErrorLog('*****FLAGS'.$flags, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
 		
     $service_template_map=array();
 		$content_text=ContentHandler::getContentText($content);
@@ -59,7 +59,7 @@ class CPSVSpawn{
 		 */
 		
 		$diadikasies_page_output_content="";
-		$diadikasies_page_serialized_template="{{Καταχωρημένη Υπηρεσία".PHP_EOL;
+		$diadikasies_page_serialized_template="{{Πλαίσιο Πληροφοριών Υπηρεσίας".PHP_EOL;
 		$cpsv_public_service_serialized_template="{{";
 		$cpsv_evidence_serialized_template="{{";
 		$cpsv_cost_serialized_template="{{";
@@ -106,7 +106,7 @@ class CPSVSpawn{
 			self::$g_article_id=$article->getId();
       $service_template_map=preg_split("/\|/", $content_text); // The starting character for each template line
       if (sizeof($service_template_map)){
-        wfErrorLog('*****size of map'.sizeof($service_template_map), '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
+//        wfErrorLog('*****size of map'.sizeof($service_template_map), '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
       }
       
       foreach($service_template_map as $map_entry){
@@ -119,161 +119,166 @@ class CPSVSpawn{
 				if(mb_stristr($map_entry, "input_service_identifier", false, 'UTF-8')){
 //					$diadikasies_page_serialized_template .= $map_entry;
 //					$cpsv_public_service_serialized_template .= $map_entry;
+//					$diadikasies_page_serialized_template .= "|Αναγνωριστικό Υπηρεσίας=GR".rand(0, 1000000);
 					
-					$input_service_identifier_value = $map_entry;
+//					$input_service_identifier_value = $map_entry;
+					$input_service_identifier_value = "GR".rand(0, 1000000);
 				}
 				
 				if(mb_stristr($map_entry, "input_service_name", false, 'UTF-8')){
 //					$diadikasies_page_serialized_template .= $map_entry;
 //					$cpsv_public_service_serialized_template .= $map_entry;
 					
-					$input_service_name_value = $map_entry;
+//					$diadikasies_page_serialized_template .= "|".$map_entry;
+//					$input_service_name_value = $map_entry;
+					$input_service_name_value = mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
 				}
 				
         if(mb_stristr($map_entry, "input_service_description", false, 'UTF-8')){
 					
-					$input_service_description_value = $map_entry;
+//					$input_service_description_value = $map_entry;
 					
-          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
-          $input_service_description_value="== Περιγραφη Υπηρεσιας == ".PHP_EOL.$tmpl_value.PHP_EOL;
-          wfErrorLog("Περιγραφη Υπηρεσιας => ".$input_service_description_value, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
+//          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+//          $input_service_description_value="== Περιγραφη Υπηρεσιας == ".PHP_EOL.$tmpl_value;
+					$input_service_description_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
         }
 				
 				if(mb_stristr($map_entry, "input_service_competent_authority", false, 'UTF-8')){
 					
-					$input_service_competent_authority_value = $map_entry;
+					$input_service_competent_authority_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
 					
-					$diadikasies_page_serialized_template.=$map_entry;
-          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
-          $input_service_description_value="== Περιγραφη Υπηρεσιας == ".PHP_EOL.$tmpl_value.PHP_EOL;
-          wfErrorLog("Περιγραφη Υπηρεσιας => ".$input_service_description_value, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
-          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
-					
+//					$input_service_competent_authority_value = $map_entry;
+//					$diadikasies_page_serialized_template .= "|".$map_entry;
+//          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+//          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
 				}
 				
 				if(mb_stristr($map_entry, "input_service_provided_by", false, 'UTF-8')){
 					
-					$input_service_provided_by_value = $map_entry;
+					$input_service_provided_by_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
 					
-					$diadikasies_page_serialized_template.=$map_entry;
-          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+//					$input_service_provided_by_value = $map_entry;
+					
+//					$diadikasies_page_serialized_template .= "|".$map_entry;
+//          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
 					
 				}
 				
 				if(mb_stristr($map_entry, "input_service_provided_to", false, 'UTF-8')){
 					
-					$input_service_provided_to_value = $map_entry;
+//					$input_service_provided_to_value = $map_entry;
 					
-					$diadikasies_page_serialized_template.=$map_entry;
-          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+//					$diadikasies_page_serialized_template .= $map_entry;
+//          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+          $input_service_provided_to_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
 					
 				}
 				
 				if(mb_stristr($map_entry, "input_service_execution_method", false, 'UTF-8')){
 					
-					$input_service_execution_method_value = $map_entry;
+//					$input_service_execution_method_value = $map_entry;
 					
-					$diadikasies_page_serialized_template.=$map_entry;
-          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+//					$diadikasies_page_serialized_template .= $map_entry;
+          $input_service_execution_method_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
 					
 				}
 				
-				if(mb_stristr($map_entry, "input_service_formal_framework", false, 'UTF-8')){
+				if(mb_stristr($map_entry, "input_service_formal_framework_entry", false, 'UTF-8')){
 					
-					$input_service_formal_framework_value = $map_entry;
+//					$input_service_formal_framework_value = $map_entry;
 					
-					$diadikasies_page_serialized_template.=$map_entry;
-          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+//					$diadikasies_page_serialized_template.=$map_entry;
+          $input_service_formal_framework_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
 					
 				}
 				
 				if(mb_stristr($map_entry, "input_service_formal_framework_description", false, 'UTF-8')){
 					
-					$input_service_formal_framework_value = $map_entry;
+//					$input_service_formal_framework_value = $map_entry;
           
-					$tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+					$input_service_formal_framework_description_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
 					
 				}
 				
 				if(mb_stristr($map_entry, "input_service_input", false, 'UTF-8')){
 					
-					$input_service_input_value = $map_entry;
+//					$input_service_input_value = $map_entry;
 					
-          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+          $input_service_input_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
 					
 				}
 				
 				if(mb_stristr($map_entry, "input_service_cost", false, 'UTF-8')){
 					
-					$input_service_cost_value = $map_entry;
+//					$input_service_cost_value = $map_entry;
 					
-					$diadikasies_page_serialized_template.=$map_entry;
-          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+//					$diadikasies_page_serialized_template.=$map_entry;
+          $input_service_cost_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
 					
 				}
 				
 				if(mb_stristr($map_entry, "input_service_output", false, 'UTF-8')){
 					
-					$input_service_output_value = $map_entry;
+//					$input_service_output_value = $map_entry;
           
-					$tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+					$input_service_output_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
 					
 				}
 				
 				if(mb_stristr($map_entry, "input_service_completion_time", false, 'UTF-8')){
 					
-					$input_service_completion_time_value = $map_entry;
+//					$input_service_completion_time_value = $map_entry;
 					
-					$diadikasies_page_serialized_template.=$map_entry;
-          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+//					$diadikasies_page_serialized_template.=$map_entry;
+          $input_service_completion_time_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
 					
 				}
 				
 				if(mb_stristr($map_entry, "input_service_related_services", false, 'UTF-8')){
 					
-					$input_service_related_services_value = $map_entry;
+//					$input_service_related_services_value = $map_entry;
           
-					$tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+					$input_service_related_services_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
 					
 				}
 				
 				if(mb_stristr($map_entry, "input_service_related_organizations", false, 'UTF-8')){
 					
-					$input_service_related_organizations_value = $map_entry;
+//					$input_service_related_organizations_value = $map_entry;
           
-          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+          $input_service_related_organizations_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
 					
 				}
 				
 				if(mb_stristr($map_entry, "input_service_keywords", false, 'UTF-8')){
 					
-					$input_service_keywords_value = $map_entry;
+//					$input_service_keywords_value = $map_entry;
           
-          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+          $input_service_keywords_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
 					
 				}
 				
 				if(mb_stristr($map_entry, "input_service_public_service_reference", false, 'UTF-8')){
 					
-					$input_service_public_service_reference_value = $map_entry;
+//					$input_service_public_service_reference_value = $map_entry;
           
-          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+          $input_service_public_service_reference_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
 					
 				}
 				
-				if(mb_stristr($map_entry, "input_service_registry", false, 'UTF-8')){
+				if(mb_stristr($map_entry, "input_service_registry_entry", false, 'UTF-8')){
 					
-					$input_service_registry_value = $map_entry;
+//					$input_service_registry_value = $map_entry;
           
-          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+          $input_service_registry_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
 					
 				}
 				
 				if(mb_stristr($map_entry, "input_service_registry_description", false, 'UTF-8')){
 					
-					$input_service_registry_description_value = $map_entry;
+//					$input_service_registry_description_value = $map_entry;
           
-          $tmpl_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+          $input_service_registry_description_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
 					
 				}
 //				
@@ -285,54 +290,101 @@ class CPSVSpawn{
 			$diadikasies_page_serialized_template .= 
 //							'|input_service_name='.mb_substr($input_service_name_value, mb_strpos($input_service_name_value, '=', NULL, 'UTF-8')+1).PHP_EOL.
 //							mb_substr($input_service_name_value, mb_strpos($input_service_name_value, '=', NULL, 'UTF-8')+1).'|'.PHP_EOL.
-							$input_service_name_value.PHP_EOL.
-							$input_service_competent_authority_value.','.mb_substr($input_service_provided_by_value, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1).PHP_EOL.
-							$input_service_provided_to_value.PHP_EOL.
-							$input_service_formal_framework_value.PHP_EOL.
-							$input_service_completion_time_value.PHP_EOL.
-							$input_service_cost_value.PHP_EOL.
+							"|Ταυτότητα Υπηρεσίας=".$input_service_identifier_value.PHP_EOL.
+							"|Τίτλος Υπηρεσίας=".$input_service_name_value.PHP_EOL.
+							"|Παρέχεται Από=".$input_service_competent_authority_value.','.$input_service_provided_by_value.PHP_EOL.
+							"|Παρέχεται Σε=".$input_service_provided_to_value.PHP_EOL.
+							"|Νομοθετικό Πλαίσιο=".$input_service_formal_framework_value.PHP_EOL.
+							"|Εργάσιμες ημέρες κατά προσέγγιση=".$input_service_completion_time_value.PHP_EOL.
+							"|Κόστος σε ευρώ=".$input_service_cost_value.PHP_EOL.
 							'}}'.PHP_EOL;
 			
 /**
  * The part of the program where the multiple templates for evidence and input
  * are parsed and serialized into strings to be appended to the page content
  */		
-			// Placing the content text into a temporary content text substring variable
-			// for inside loop manipulation.
+			
+			$evidence_table="{| class='wikitable'
+				\n!Α/Α
+				\n!Απαραίτητα Δικαιολογητικά
+				\n!Κατάθεση από τον Αιτούντα / Αυτεπάγγελτη Αναζήτηση".PHP_EOL;
+			$steps_table="";
+			
+			/**
+			 * Function parses template instance, produces single wikitable line from it.
+			 */
 			function parse_evidence_template($substring){
+				$evidence_table_line=""; // The serialized wiki table for the current evidence table, to be appended to wiki page
 				$evidence_template_map=array();
 				$evidence_template_map=preg_split("/\|/", $substring);
 				
 				foreach($evidence_template_map as $evidence_map_entry){
 					
+					wfErrorLog("THE TABLE LINE::::".$evidence_map_entry, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+
+					$evidence_table_line="|-".PHP_EOL;
+					if(mb_stristr($evidence_map_entry, "Α.Α.=", false, 'UTF-8')){
+						$evidence_table_line .=
+										"|".mb_substr($evidence_map_entry, mb_strpos($evidence_map_entry, '=', NULL, 'UTF-8')).PHP_EOL;
+					}
+					else{
+						$evidence_table_line .= "|".PHP_EOL;
+					}
+					
+					if(mb_stristr($evidence_map_entry, "Απαραίτητο Δικαιολογητικό=", false, 'UTF-8')){
+						$evidence_table_line .=
+										"|".mb_substr($evidence_map_entry, mb_strpos($evidence_map_entry, '=', NULL, 'UTF-8')+1).PHP_EOL;
+					}
+					else{
+						$evidence_table_line .= "|".PHP_EOL;
+					}
+					
+					if(mb_stristr($evidence_map_entry, "Υποκείμενο υποβολής - Αυτεπάγγελτη Αναζήτηση=", false, 'UTF-8')){
+						$evidence_table_line .=
+										"|".mb_substr($evidence_map_entry, mb_strpos($evidence_map_entry, '=', NULL, 'UTF-8')+1).PHP_EOL;
+					}
+					else{
+						$evidence_table_line .= "|".PHP_EOL;
+					}
 				}
+				
+				return $evidence_table_line."|-";
 			}
 			
+			// Placing the content text into a temporary content text substring variable
+			// for inside loop manipulation.
+			
 			$content_text_substring=$content_text;
-			for($i=0; $i<mb_substr_count($content_text_substring, "{{Δικαιολογητικό", 'UTF-8'); $i++){
+			wfErrorLog("THE TABLE::::".$content_text_substring, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+			for($i=0; $i < mb_substr_count($content_text_substring, "{{Δικαιολογητικό", 'UTF-8'); $i++){
 				$current_tmpl_start=mb_strpos($content_text_substring, "{{Δικαιολογητικό", 0, 'UTF-8');
 				$current_tmpl_end=mb_strpos($content_text_substring, "}}", 0, 'UTF-8');
 				$current_tmpl_length=$current_tmpl_end-$current_tmpl_start;
 				
+				// Substring the template contents
 				$content_text_substring= mb_substr($current_tmpl_start, $current_tmpl_length, 'UTF-8');
+				$evidence_table .= parse_evidence_template($content_text_substring);
+				
+				
+				// Trim the last parsed template from the start of the string
 				$content_text_substring=mb_substr($current_tmpl_end+2, null, 'UTF-8');
 			}
+			$evidence_table .= PHP_EOL."|}";
 			
 			
-			$diadikasies_page_output_content=$diadikasies_page_serialized_template.
-          "== Περιγραφη Υπηρεσιας == ".
-					mb_substr($input_service_description_value, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1).PHP_EOL.
-          "=== Νομοθετικό Πλαίσιο === ".
-					mb_substr($input_service_formal_framework_description_value, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1).PHP_EOL.
-          "=== Τρόπος Διεκπεραίωσης === ".
-					mb_substr($input_service_execution_method_value, mb_strpos($input_service_execution_method_value, '=', NULL, 'UTF-8')+1).PHP_EOL.
-          "=== Έντυπο που χρησιμοποιείται === ".
-					mb_substr($input_service_execution_method_value, mb_strpos($input_service_execution_method_value, '=', NULL, 'UTF-8')+1).PHP_EOL.
-          "== Δικαιολογητικά == ".
-					mb_substr($input_service_description_value, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1).PHP_EOL.
-          "== Διαδικασίες == ".
-					mb_substr($input_service_description_value, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1).PHP_EOL.
-					
+			$diadikasies_page_output_content=$diadikasies_page_serialized_template.PHP_EOL.
+          "== Περιγραφη Υπηρεσιας == ".PHP_EOL.
+					$input_service_description_value.PHP_EOL.
+          "=== Νομοθετικό Πλαίσιο === ".PHP_EOL.
+					$input_service_formal_framework_description_value.PHP_EOL.
+          "=== Τρόπος Διεκπεραίωσης === ".PHP_EOL.
+					$input_service_execution_method_value.PHP_EOL.
+          "=== Έντυπο που χρησιμοποιείται === ".PHP_EOL.
+					$input_service_execution_method_value.PHP_EOL.
+          "== Δικαιολογητικά == ".PHP_EOL.
+					$evidence_table.PHP_EOL.
+          "== Διαδικασίες == ".PHP_EOL.
+					$steps_table.PHP_EOL;
 							
       
       /**
@@ -352,19 +404,20 @@ class CPSVSpawn{
       //$public_service_page=WikiPage::factory($article_title);
       //$test_user=User::newFromId(2);
 
-  		$content_text=$content_text.$input_service_description_value;
+//  		$content_text=$content_text.$input_service_description_value;
+  		$content_text=$diadikasies_page_output_content;//.$evidence_table;
       if($user){
 //        $public_service_page->doEditContent($article_content, $content_text, $flags, $baseRevId, $user);
 //				ContentHandler::makeContent($content_text, $article->getTitle());
 				$new_content=new WikitextContent($content_text);
 //        $artcl_status=$article->doEditContent(ContentHandler::makeContent($content_text, $article->getTitle()), 'test for template rewrite', EDIT_UPDATE, $baseRevId, $user);
         $artcl_status=$article->doEditContent($new_content, 'test for template rewrite', 2); // 2 stands for EDIT_UPDATE. ref:	https://doc.wikimedia.org/mediawiki-core/1.27.1/php/group__Constants.html
-        wfErrorLog($artcl_status, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
-        wfErrorLog("the page id: ".$article->getId().PHP_EOL, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
-        wfErrorLog($article->getTitle(), '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
+//        wfErrorLog($artcl_status, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
+//        wfErrorLog("the page id: ".$article->getId().PHP_EOL, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
+//        wfErrorLog($article->getTitle(), '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
       }
     }
-    wfErrorLog($content_text, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
+//    wfErrorLog($content_text, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
 		
     return true;
   }
