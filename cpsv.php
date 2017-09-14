@@ -325,10 +325,11 @@ class CPSVSpawn{
 					$evidence_table_line="|-".PHP_EOL;
 					if(mb_stristr($evidence_map_entry, "Α.Α.=", false, 'UTF-8')){
 						$evidence_table_line .=
-										"|".mb_substr($evidence_map_entry, mb_strpos($evidence_map_entry, '=', NULL, 'UTF-8')).PHP_EOL;
+										"|".mb_substr($evidence_map_entry, mb_strpos($evidence_map_entry, '=', NULL, 'UTF-8')+1).PHP_EOL;
 					}
 					else{
 						$evidence_table_line .= "|".PHP_EOL;
+						wfErrorLog("ELSE>1", '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
 					}
 					
 					if(mb_stristr($evidence_map_entry, "Απαραίτητο Δικαιολογητικό=", false, 'UTF-8')){
@@ -337,6 +338,7 @@ class CPSVSpawn{
 					}
 					else{
 						$evidence_table_line .= "|".PHP_EOL;
+						wfErrorLog("ELSE>2", '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
 					}
 					
 					if(mb_stristr($evidence_map_entry, "Υποκείμενο υποβολής - Αυτεπάγγελτη Αναζήτηση=", false, 'UTF-8')){
@@ -345,6 +347,7 @@ class CPSVSpawn{
 					}
 					else{
 						$evidence_table_line .= "|".PHP_EOL;
+						wfErrorLog("ELSE>3", '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
 					}
 				}
 				
@@ -356,19 +359,27 @@ class CPSVSpawn{
 			
 			$content_text_substring=$content_text;
 			wfErrorLog("THE TABLE::::".$content_text_substring, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+			
 			for($i=0; $i < mb_substr_count($content_text_substring, "{{Δικαιολογητικό", 'UTF-8'); $i++){
 				$current_tmpl_start=mb_strpos($content_text_substring, "{{Δικαιολογητικό", 0, 'UTF-8');
+			// resetting the start of the string to the first occurence of "{{Δικαιολογητικό" that was identified above
+				$content_text_substring= mb_substr($content_text_substring, $current_tmpl_start);
 				$current_tmpl_end=mb_strpos($content_text_substring, "}}", 0, 'UTF-8');
-				$current_tmpl_length=$current_tmpl_end-$current_tmpl_start;
+				//$current_tmpl_length=$current_tmpl_end-$current_tmpl_start;
+			wfErrorLog("THE START:::::".$current_tmpl_start, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+			wfErrorLog("THE END:::::".$current_tmpl_end, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+			//wfErrorLog("THE LENGTH:::::".$current_tmpl_length, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+
 				
 				// Substring the template contents
-				$content_text_substring= mb_substr($current_tmpl_start, $current_tmpl_length, 'UTF-8');
-				$evidence_table .= parse_evidence_template($content_text_substring);
+//				$content_text_substring= mb_substr(0, $current_tmpl_end, 'UTF-8');
+				$evidence_table .= parse_evidence_template(mb_substr($content_text_substring, 0, $current_tmpl_end, 'UTF-8'));
 				
 				
 				// Trim the last parsed template from the start of the string
-				$content_text_substring=mb_substr($current_tmpl_end+2, null, 'UTF-8');
+				$content_text_substring=mb_substr($content_text_substring, 0, $current_tmpl_end, 'UTF-8');
 			}
+			
 			$evidence_table .= PHP_EOL."|}";
 			
 			
