@@ -315,6 +315,40 @@ class CPSVSpawn{
 				\n!Εμπλεκόμενος Αρμόδιος
 				\n!Χρόνος Διεκπεραίωσης Βήματος".PHP_EOL;
 			
+      
+      $evidence_template_labels=[
+          "Α.Α.=", 
+          "Απαραίτητο Δικαιολογητικό=", 
+          "Υποκείμενο υποβολής - Αυτεπάγγελτη Αναζήτηση="
+          ];
+      
+      $steps_template_labels=[
+          "Α.Α.=",
+          "Βήμα Διαδικασίας=",
+          "Θεσμικό Πλαίσιο- Διοικητική Πρακτική=",
+          "Εμπλεκόμενος Αρμόδιος=",
+          "Χρόνος Διεκπεραίωσης Βήματος=",
+          ];
+      
+      function parse_wikitable_from_wikitemplate($template_string, array $template_labels){
+				$wikitable_line="|-".PHP_EOL; // The serialized wiki table for the current evidence table, to be appended to wiki page
+        $wikitemplate_map=preg_split("/\|/", $substring);
+        
+        foreach($evidence_template_map as $evidence_map_entry){
+          
+          foreach($template_labels as $template_label){
+          
+            if(mb_stristr($evidence_map_entry, $template_label, false, 'UTF-8')){
+              $evidence_table_line .=
+                      "|".mb_substr($evidence_map_entry, mb_strpos($evidence_map_entry, '=', NULL, 'UTF-8')+1).PHP_EOL;
+              wfErrorLog("ev_tbl_ln........>".$evidence_table_line, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+            }
+          }
+        }
+        
+      }
+      
+      
 			/**
 			 * Function parses template instance, produces single wikitable line from it.
 			 */
@@ -421,6 +455,13 @@ class CPSVSpawn{
 			// Placing the content text into a temporary content text substring variable
 			// for inside loop manipulation.
 			
+      function retrieve_wikitemplates_as_substrings($content_text){
+        // detect each template's boundaries {{ }}
+        // parse first line and add to the map with the first line value as key
+        // parse the lines using the parse template function.
+      }
+      
+      
 			$content_text_substring=$content_text;
 			wfErrorLog("THE TABLE::::".$content_text_substring, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
 			wfErrorLog("TIMES FOUND::::".mb_substr_count($content_text_substring, "{{Δικαιολογητικό", 'UTF-8'), '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
