@@ -308,50 +308,114 @@ class CPSVSpawn{
 				\n!Α/Α
 				\n!Απαραίτητα Δικαιολογητικά
 				\n!Κατάθεση από τον Αιτούντα / Αυτεπάγγελτη Αναζήτηση".PHP_EOL;
-			$steps_table="";
+			$steps_table="{| class='wikitable'
+				\n!Α/Α
+				\n!Βήμα Διαδικασίας
+				\n!Θεσμικό Πλαίσιο - Διοικητική Πρακτική
+				\n!Εμπλεκόμενος Αρμόδιος
+				\n!Χρόνος Διεκπεραίωσης Βήματος".PHP_EOL;
 			
 			/**
 			 * Function parses template instance, produces single wikitable line from it.
 			 */
 			function parse_evidence_template($substring){
-				$evidence_table_line=""; // The serialized wiki table for the current evidence table, to be appended to wiki page
+				$evidence_table_line="|-".PHP_EOL; // The serialized wiki table for the current evidence table, to be appended to wiki page
 				$evidence_template_map=array();
 				$evidence_template_map=preg_split("/\|/", $substring);
 				
+//				$evidence_table_line="|-".PHP_EOL;
 				foreach($evidence_template_map as $evidence_map_entry){
 					
 					wfErrorLog("THE TABLE LINE::::".$evidence_map_entry, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
 
-					$evidence_table_line="|-".PHP_EOL;
 					if(mb_stristr($evidence_map_entry, "Α.Α.=", false, 'UTF-8')){
 						$evidence_table_line .=
 										"|".mb_substr($evidence_map_entry, mb_strpos($evidence_map_entry, '=', NULL, 'UTF-8')+1).PHP_EOL;
+						wfErrorLog("ev_tbl_ln........>".$evidence_table_line, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
 					}
-					else{
-						$evidence_table_line .= "|".PHP_EOL;
-						wfErrorLog("ELSE>1", '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
-					}
+//					else{
+//						$evidence_table_line .= "|".PHP_EOL;
+//						wfErrorLog("ELSE>1", '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+//					}
 					
 					if(mb_stristr($evidence_map_entry, "Απαραίτητο Δικαιολογητικό=", false, 'UTF-8')){
 						$evidence_table_line .=
 										"|".mb_substr($evidence_map_entry, mb_strpos($evidence_map_entry, '=', NULL, 'UTF-8')+1).PHP_EOL;
+						wfErrorLog("ev_tbl_ln........>".$evidence_table_line, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
 					}
-					else{
-						$evidence_table_line .= "|".PHP_EOL;
-						wfErrorLog("ELSE>2", '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
-					}
+//					else{
+//						$evidence_table_line .= "|".PHP_EOL;
+//						wfErrorLog("ELSE>2", '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+//					}
 					
 					if(mb_stristr($evidence_map_entry, "Υποκείμενο υποβολής - Αυτεπάγγελτη Αναζήτηση=", false, 'UTF-8')){
 						$evidence_table_line .=
 										"|".mb_substr($evidence_map_entry, mb_strpos($evidence_map_entry, '=', NULL, 'UTF-8')+1).PHP_EOL;
+						wfErrorLog("ev_tbl_ln........>".$evidence_table_line, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
 					}
-					else{
-						$evidence_table_line .= "|".PHP_EOL;
-						wfErrorLog("ELSE>3", '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+//					else{
+//						$evidence_table_line .= "|".PHP_EOL;
+//						wfErrorLog("ELSE>3", '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+//					}
+				}
+			}
+				
+			/**
+			 * Function parses template instance, produces single wikitable line from it.
+			 */
+			function parse_steps_template($substring){
+				$steps_table_line="|-".PHP_EOL; // The serialized wiki table for the current steps table, to be appended to wiki page
+				$steps_template_map=array();
+				$steps_template_map=preg_split("/\|/", $substring);
+				
+//				$steps_table_line="|-".PHP_EOL;
+				foreach($steps_template_map as $steps_map_entry){
+					
+					wfErrorLog("THE TABLE LINE::::".$steps_map_entry, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+
+					if(mb_stristr($steps_map_entry, "Α.Α.=", false, 'UTF-8')){
+						$steps_table_line .=
+										"|".mb_substr($steps_map_entry, mb_strpos($steps_map_entry, '=', NULL, 'UTF-8')+1).PHP_EOL;
+						wfErrorLog("ev_tbl_ln........>".$steps_table_line, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
 					}
+//					else{
+//						$steps_table_line .= "|".PHP_EOL;
+//						wfErrorLog("ELSE>1", '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+//					}
+					
+					if(mb_stristr($steps_map_entry, "Βήμα Διαδικασίας=", false, 'UTF-8')){
+						$steps_table_line .=
+										"|".mb_substr($steps_map_entry, mb_strpos($steps_map_entry, '=', NULL, 'UTF-8')+1).PHP_EOL;
+						wfErrorLog("ev_tbl_ln........>".$steps_table_line, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+					}
+//					else{
+//						$steps_table_line .= "|".PHP_EOL;
+//						wfErrorLog("ELSE>2", '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+//					}
+					
+					if(mb_stristr($steps_map_entry, "Θεσμικό Πλαίσιο- Διοικητική Πρακτική=", false, 'UTF-8')){
+						$steps_table_line .=
+										"|".mb_substr($steps_map_entry, mb_strpos($steps_map_entry, '=', NULL, 'UTF-8')+1).PHP_EOL;
+						wfErrorLog("ev_tbl_ln........>".$steps_table_line, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+					}
+					if(mb_stristr($steps_map_entry, "Εμπλεκόμενος Αρμόδιος=", false, 'UTF-8')){
+						$steps_table_line .=
+										"|".mb_substr($steps_map_entry, mb_strpos($steps_map_entry, '=', NULL, 'UTF-8')+1).PHP_EOL;
+						wfErrorLog("ev_tbl_ln........>".$steps_table_line, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+					}
+					if(mb_stristr($steps_map_entry, "Χρόνος Διεκπεραίωσης Βήματος=", false, 'UTF-8')){
+						$steps_table_line .=
+										"|".mb_substr($steps_map_entry, mb_strpos($steps_map_entry, '=', NULL, 'UTF-8')+1).PHP_EOL;
+						wfErrorLog("ev_tbl_ln........>".$steps_table_line, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+					}
+//					else{
+//						$steps_table_line .= "|".PHP_EOL;
+//						wfErrorLog("ELSE>3", '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+//					}
 				}
 				
-				return $evidence_table_line."|-";
+				wfErrorLog("THE ΤABLE-LINE::::".$steps_table_line, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+				return $steps_table_line."|-";
 			}
 			
 			// Placing the content text into a temporary content text substring variable
@@ -359,16 +423,21 @@ class CPSVSpawn{
 			
 			$content_text_substring=$content_text;
 			wfErrorLog("THE TABLE::::".$content_text_substring, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+			wfErrorLog("TIMES FOUND::::".mb_substr_count($content_text_substring, "{{Δικαιολογητικό", 'UTF-8'), '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+			$evidence_times_found=mb_substr_count($content_text_substring, "{{Δικαιολογητικό", 'UTF-8');
+			$steps_times_found=mb_substr_count($content_text_substring, "{{Βήμα Διαδικασίας", 'UTF-8');
 			
-			for($i=0; $i < mb_substr_count($content_text_substring, "{{Δικαιολογητικό", 'UTF-8'); $i++){
+			for($i=0; $i < $evidence_times_found; $i++){
+				wfErrorLog("THE ΙΟΤΑ:::::".$i, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
 				$current_tmpl_start=mb_strpos($content_text_substring, "{{Δικαιολογητικό", 0, 'UTF-8');
-			// resetting the start of the string to the first occurence of "{{Δικαιολογητικό" that was identified above
+			
+				// resetting the start of the string to the first occurence of "{{Δικαιολογητικό" that was identified above
 				$content_text_substring= mb_substr($content_text_substring, $current_tmpl_start);
 				$current_tmpl_end=mb_strpos($content_text_substring, "}}", 0, 'UTF-8');
 				//$current_tmpl_length=$current_tmpl_end-$current_tmpl_start;
-			wfErrorLog("THE START:::::".$current_tmpl_start, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
-			wfErrorLog("THE END:::::".$current_tmpl_end, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
-			//wfErrorLog("THE LENGTH:::::".$current_tmpl_length, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+				wfErrorLog("THE START:::::".$current_tmpl_start, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+				wfErrorLog("THE END:::::".$current_tmpl_end, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+				//wfErrorLog("THE LENGTH:::::".$current_tmpl_length, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
 
 				
 				// Substring the template contents
@@ -377,10 +446,40 @@ class CPSVSpawn{
 				
 				
 				// Trim the last parsed template from the start of the string
-				$content_text_substring=mb_substr($content_text_substring, 0, $current_tmpl_end, 'UTF-8');
+				$content_text_substring=mb_substr($content_text_substring, $current_tmpl_end+2, null, 'UTF-8');
+				
+				wfErrorLog("AFTER SUBSTRING:::::".$content_text_substring, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
 			}
 			
 			$evidence_table .= PHP_EOL."|}";
+			
+			
+			
+			for($i=0; $i < $steps_times_found; $i++){
+				wfErrorLog("THE ΙΟΤΑ:::::".$i, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+				$current_tmpl_start=mb_strpos($content_text_substring, "{{Βήμα Διαδικασίας", 0, 'UTF-8');
+			
+				// resetting the start of the string to the first occurence of "{{Δικαιολογητικό" that was identified above
+				$content_text_substring= mb_substr($content_text_substring, $current_tmpl_start);
+				$current_tmpl_end=mb_strpos($content_text_substring, "}}", 0, 'UTF-8');
+				//$current_tmpl_length=$current_tmpl_end-$current_tmpl_start;
+				wfErrorLog("THE START:::::".$current_tmpl_start, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+				wfErrorLog("THE END:::::".$current_tmpl_end, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+				//wfErrorLog("THE LENGTH:::::".$current_tmpl_length, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+
+				
+				// Substring the template contents
+//				$content_text_substring= mb_substr(0, $current_tmpl_end, 'UTF-8');
+				$steps_table .= parse_steps_template(mb_substr($content_text_substring, 0, $current_tmpl_end, 'UTF-8'));
+				
+				
+				// Trim the last parsed template from the start of the string
+				$content_text_substring=mb_substr($content_text_substring, $current_tmpl_end+2, null, 'UTF-8');
+				
+				wfErrorLog("AFTER SUBSTRING:::::".$content_text_substring, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+			}
+			
+			$steps_table .= PHP_EOL."|}";
 			
 			
 			$diadikasies_page_output_content=$diadikasies_page_serialized_template.PHP_EOL.
