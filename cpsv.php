@@ -90,6 +90,8 @@ class CPSVSpawn{
     $input_service_public_service_reference_value='';
 		$input_service_registry_value='';
 		$input_service_registry_description_value='';
+    
+    $wikitables_array=array();
 	
 		
     
@@ -316,6 +318,9 @@ class CPSVSpawn{
 				\n!Χρόνος Διεκπεραίωσης Βήματος".PHP_EOL;
 			
       
+      $templates__template_labels_map=array();
+      
+      
       $evidence_template_labels=[
           "Α.Α.=", 
           "Απαραίτητο Δικαιολογητικό=", 
@@ -330,23 +335,8 @@ class CPSVSpawn{
           "Χρόνος Διεκπεραίωσης Βήματος=",
           ];
       
-      function parse_wikitable_from_wikitemplate($template_string, array $template_labels){
-				$wikitable_line="|-".PHP_EOL; // The serialized wiki table for the current evidence table, to be appended to wiki page
-        $wikitemplate_map=preg_split("/\|/", $substring);
-        
-        foreach($evidence_template_map as $evidence_map_entry){
-          
-          foreach($template_labels as $template_label){
-          
-            if(mb_stristr($evidence_map_entry, $template_label, false, 'UTF-8')){
-              $evidence_table_line .=
-                      "|".mb_substr($evidence_map_entry, mb_strpos($evidence_map_entry, '=', NULL, 'UTF-8')+1).PHP_EOL;
-              wfErrorLog("ev_tbl_ln........>".$evidence_table_line, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
-            }
-          }
-        }
-        
-      }
+      $templates__template_labels_map["{{Δικαιολογητικό"]=$evidence_template_labels;
+      $templates__template_labels_map["{{Βήμα Διαδικασίας"]=$steps_template_labels;
       
       
 			/**
@@ -392,6 +382,7 @@ class CPSVSpawn{
 //						wfErrorLog("ELSE>3", '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
 //					}
 				}
+				return $evidence_table_line."|-";
 			}
 				
 			/**
@@ -451,17 +442,11 @@ class CPSVSpawn{
 				wfErrorLog("THE ΤABLE-LINE::::".$steps_table_line, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
 				return $steps_table_line."|-";
 			}
-			
+      
+      
+      
 			// Placing the content text into a temporary content text substring variable
 			// for inside loop manipulation.
-			
-      function retrieve_wikitemplates_as_substrings($content_text){
-        // detect each template's boundaries {{ }}
-        // parse first line and add to the map with the first line value as key
-        // parse the lines using the parse template function.
-      }
-      
-      
 			$content_text_substring=$content_text;
 			wfErrorLog("THE TABLE::::".$content_text_substring, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
 			wfErrorLog("TIMES FOUND::::".mb_substr_count($content_text_substring, "{{Δικαιολογητικό", 'UTF-8'), '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
@@ -492,7 +477,6 @@ class CPSVSpawn{
 				wfErrorLog("AFTER SUBSTRING:::::".$content_text_substring, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
 			}
 			
-			$evidence_table .= PHP_EOL."|}";
 			
 			
 			
@@ -520,7 +504,15 @@ class CPSVSpawn{
 				wfErrorLog("AFTER SUBSTRING:::::".$content_text_substring, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
 			}
 			
+      
+      $wikitables=fill_wikitables_array($content_text);
+      
+      
+      
+			
+      $evidence_table .= PHP_EOL."|}";
 			$steps_table .= PHP_EOL."|}";
+      
 			
 			
 			$diadikasies_page_output_content=$diadikasies_page_serialized_template.PHP_EOL.
@@ -576,5 +568,58 @@ class CPSVSpawn{
 	private static function template_string_append_closing_braces($template_serialized_string){
 		$template_serialized_string.='}}';
 	}
+
+  private static function fill_wikitables_array($content_text){
+    $wikitables_array=array();
+
+    // optional part: remove the first template of the page, the one that should be the
+    // "public service" template. we only care for "evidence" and "steps" templates
+    // and all the others that should translate into wikitables
+
+    $service_template_end=mb_strpos($content_text, "}}");
+    $content_text=mb_substr($content_text, $service_template_end+1);
+
+
+    while(mb_stristr($content_text, "{{", false, 'UTF-8')){ // while we can detect template starting points in the wikipage
+      $current_template_end=mb_strpos($content_text, "}}");
+      $current_template_string=mb_substr($content_text, 0, $current_template_end+1, 'UTF-8');
+      $content_text=mb_substr($content_text, $current_template_end+1, null, 'UTF-8');
+
+      $wikitable_line=parse_wikitable_from_wikitemplate($template_string);
+      $wikitables_array[$wikitable_line[0]] .= $wikitable_line[1];
+      
+      return $wikitables_array;
+    }
+
+
+    // detect each template's boundaries {{ }}
+
+
+
+    // parse first line and add to the map with the first line value as key
+    // parse the lines using the parse template function.
+  }  
+        
+  private function parse_wikitable_line_from_wikitemplate($template_string){
+//				$result_wikitables_map=array();
+
+    $wikitable_line="|-".PHP_EOL; // The serialized wiki table for the current evidence table, to be appended to wiki page
+    $wikitemplate_map=preg_split("/\|/", $template_string); 
+    $wikitemplate_type=trim($wikitemplate_map[0]);
+
+    foreach($wikitemplate_map as $wikitemplate_map_entry){
+          $wikitable_line .= "|".mb_substr($wikitemplate_map_entry, mb_strpos($wikitemplate_map_entry, '=', NULL, 'UTF-8')+1).PHP_EOL;
+
+//          foreach($template_labels as $template_label){
+//          
+//            if(mb_stristr($wikitemplate_map_entry, $template_label, false, 'UTF-8')){
+//              wfErrorLog("ev_tbl_ln........>".$$wikitable_string, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+//            }
+//          }
+    }
+
+    return array('wikitemplate_type'=>$wikitemplate_type, 'wikitable_line'=>$wikitable_line);
+//        return $result_wikitables_map;
+  }
 	
 }
