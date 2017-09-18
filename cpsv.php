@@ -337,11 +337,14 @@ class CPSVSpawn{
           ];
             
       
+      wfErrorLog('CONTENT TEXT::::::'.self::$content_text, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
       $wikitables=CPSVSpawn::fill_wikitables_array(self::$content_text);
       
+      wfErrorLog('WIKITABLE1::::::'.$wikitables[0], '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
+      wfErrorLog('WIKITABLE2::::::'.$wikitables[1], '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
 			
-      $evidence_table .= $wikitables['Δικαιολογητικό'].PHP_EOL."|}";
-			$steps_table .= $wikitables['Βήμα Διαδικασίας']. PHP_EOL."|}";
+      $evidence_table .= $wikitables['{{Δικαιολογητικό'].PHP_EOL."|}";
+			$steps_table .= $wikitables['{{Βήμα Διαδικασίας']. PHP_EOL."|}";
       
 			
 			
@@ -404,11 +407,11 @@ class CPSVSpawn{
     $wikitable_line="|-".PHP_EOL; // The serialized wiki table line for the current evidence table, to be appended to table instance
     $wikitemplate_map=preg_split("/\|/", $template_string); 
     $wikitemplate_type=trim($wikitemplate_map[0]);
+    wfErrorLog("TRIMMED:::::::".$wikitemplate_type, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
 
     foreach($wikitemplate_map as $wikitemplate_map_entry){
           $wikitable_line .= "|".mb_substr($wikitemplate_map_entry, mb_strpos($wikitemplate_map_entry, '=', NULL, 'UTF-8')+1).PHP_EOL;
 
-//              wfErrorLog("ev_tbl_ln........>".$wikitable_string, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
 
     }
     
@@ -423,21 +426,27 @@ class CPSVSpawn{
     // optional part: remove the first template of the page, the one that should be the
     // "public service" template. we only care for "evidence" and "steps" templates
     // and all the others that should translate into wikitables
-
     $service_template_end=mb_strpos(self::$content_text, "}}");
-    self::$content_text=mb_substr(self::$content_text, $service_template_end+1);
+    wfErrorLog("THE TEMPLATE END:::::::".$service_template_end, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+    self::$content_text=mb_substr(self::$content_text, $service_template_end+2, NULL, 'UTF-8');
 
 
     while(mb_stristr(self::$content_text, "{{", false, 'UTF-8')){ // while we can detect template starting points in the wikipage
       $current_template_end=mb_strpos(self::$content_text, "}}");
-      $current_template_string=mb_substr(self::$content_text, 0, $current_template_end+1, 'UTF-8');
-      self::$content_text=mb_substr(self::$content_text, $current_template_end+1, null, 'UTF-8');
+      $current_template_string=mb_substr(self::$content_text, 0, $current_template_end+2, 'UTF-8');
+      self::$content_text=mb_substr(self::$content_text, $current_template_end+2, null, 'UTF-8');
+//      $current_template_string=mb_stristr(self::$content_text, '}}', true, 'UTF-8');
+//      self::$content_text=mb_stristr(self::$content_text, '}}', false, 'UTF-8');
+    wfErrorLog("CURRENT TEMP STRING:::::::".$current_template_string, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+    wfErrorLog("RET CONT TEXT:::::::".self::$content_text, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+      
 
       $wikitable_line=CPSVSpawn::parse_wikitable_line_from_wikitemplate($current_template_string);
-      $wikitables_array[$wikitable_line[0]] .= $wikitable_line[1];
+    wfErrorLog("WIKITABLE LINE:::::::".$wikitable_line[1], '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
+      $wikitables_array[$wikitable_line['wikitemplate_type']] .= $wikitable_line['wikitable_line'];
       
-      return $wikitables_array;
     }
+    return $wikitables_array;
 
 
     // detect each template's boundaries {{ }}
