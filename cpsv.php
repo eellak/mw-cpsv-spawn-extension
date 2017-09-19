@@ -109,7 +109,7 @@ class CPSVSpawn{
 		 */
     if(!is_null($tmpl_start) && (self::$g_article_id===-1 || self::$g_article_id!=$article->getId()) && $flags===1+64){ //	EDIT_NEW + EDIT_AUTOSUMMARY
 			self::$g_article_id=$article->getId();
-      $service_template_map=preg_split("/\|/", self::$content_text); // The starting character for each template line
+      $service_template_map=preg_split("/\|/", mb_stristr(self::$content_text, "}}", true, 'UTF-8')); // The starting character for each template line
       if (sizeof($service_template_map)){
 //        wfErrorLog('*****size of map'.sizeof($service_template_map), '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
       }
@@ -292,12 +292,20 @@ class CPSVSpawn{
 //				}
       }
 			
+			if(empty($input_service_competent_authority_value)){
+				$input_service_competent_authority_value='';
+			}
+			else{
+				$input_service_competent_authority_value.=' ';
+			}
+			
 			$diadikasies_page_serialized_template .= 
 //							'|input_service_name='.mb_substr($input_service_name_value, mb_strpos($input_service_name_value, '=', NULL, 'UTF-8')+1).PHP_EOL.
 //							mb_substr($input_service_name_value, mb_strpos($input_service_name_value, '=', NULL, 'UTF-8')+1).'|'.PHP_EOL.
 							"|Ταυτότητα Υπηρεσίας=".$input_service_identifier_value.PHP_EOL.
 							"|Τίτλος Υπηρεσίας=".$input_service_name_value.PHP_EOL.
-							"|Παρέχεται Από=".$input_service_competent_authority_value.','.$input_service_provided_by_value.PHP_EOL.
+							"|Αρμόδια Αρχή=".$input_service_competent_authority_value.PHP_EOL.
+							"|Παρέχεται Από=".$input_service_provided_by_value.PHP_EOL.
 							"|Παρέχεται Σε=".$input_service_provided_to_value.PHP_EOL.
 							"|Νομοθετικό Πλαίσιο=".$input_service_formal_framework_value.PHP_EOL.
 							"|Εργάσιμες ημέρες κατά προσέγγιση=".$input_service_completion_time_value.PHP_EOL.
@@ -352,6 +360,7 @@ class CPSVSpawn{
           "== Περιγραφη Υπηρεσιας == ".PHP_EOL.
 					$input_service_description_value.PHP_EOL.
           "=== Νομοθετικό Πλαίσιο === ".PHP_EOL.
+							$input_service_formal_framework_value.PHP_EOL.PHP_EOL.
 					$input_service_formal_framework_description_value.PHP_EOL.
           "=== Τρόπος Διεκπεραίωσης === ".PHP_EOL.
 					$input_service_execution_method_value.PHP_EOL.
