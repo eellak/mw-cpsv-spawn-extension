@@ -1,0 +1,111 @@
+<noinclude>
+Αυτή είναι η φόρμα «Καταχωρημένη Υπηρεσία».
+Για να δημιουργήσετε σελίδα με αυτήν τη φόρμα, εισαγάγετε το όνομα της σελίδας παρακάτω.
+Αν υπάρχει ήδη σελίδα με αυτό το όνομα, θα μεταβείτε σε φόρμα για να επεξεργαστείτε αυτήν τη σελίδα.
+
+
+{{#info:Επίσημος τίτλος από ισχύον θεσμικό πλαίσιο.}}{{#forminput:form=Καταχωρημένη Υπηρεσία|placeholder= Επίσημος Τίτλος Υπηρεσίας}}
+
+</noinclude><includeonly>
+<div id="wikiPreview" style="display: none; padding-bottom: 25px; margin-bottom: 25px; border-bottom: 1px solid #AAAAAA;"></div>
+{{{for template|Καταχωρημένη Υπηρεσία}}}
+{| class="formtable"
+<!-- Αναγνωριστικό Υπηρεσίας: --> 
+| {{{field|input_service_identifier|hidden|default={{#idprovider-increment:NIS_|padding=9}} }}}
+|-
+! Τίτλος Υπηρεσίας:
+| {{{field|input_service_name|default={{PAGENAME}}|restricted|input type=text}}}
+|-
+! Αρμόδια Αρχή: 
+| {{{field|input_service_competent_authority|input type=combobox|values from category=Public Organizations}}}
+|-
+! Περιγραφή Υπηρεσίας: 
+| {{{field|input_service_description|input type=textarea}}}
+|-
+! Υπηρεσία παρέχεται από: 
+| {{{field|input_service_provided_by|input type=tokens|values from category=Public Organizations}}}
+|-
+! Υπηρεσία παρέχεται σε: 
+| {{{field|input_service_provided_to|input type=tokens|values from category=Agents}}}
+|-
+! Σχετική Νομοθεσία: 
+| {{{field|input_service_formal_framework_entry|input type=tokens|values from category=Νομοθετικό Πλαίσιο}}} 
+| {{#formlink:form=Φόρμα_Εισαγωγής_Νομοθετικού_Πλαισίου|link text=Εισαγωγή Νόμου|popup|query string=title=Form:Φόρμα_Εισαγωγής_Νομοθετικού_Πλαισίου}}
+|-
+! Περιγραφή Νομοθεσίας: 
+| {{{field|input_service_formal_framework_description|input type=textarea}}}
+|-
+! Τρόπος Διεκπεραίωσης
+| {{{field|input_service_execution_method|input type=textarea}}}
+|-
+! Έντυπο που χρησιμοποιείται: 
+| {{{field|input_service_input_entry|input type=tokens|max values=1|values from category=evidence}}}
+|-
+! Περιγραφή Εντύπου: 
+| {{{field|input_service_input_description|input type=textarea}}}
+|-
+! Έντυπα που παράγονται: 
+| {{{field|input_service_output|input type=tokens|values from category=evidence}}}
+|-
+! Κόστος Υπηρεσίας: 
+| {{{field|input_service_cost|input type=tokens|max values=1|values from category=cost}}}
+|-
+! Χρόνος Διεκπεραίωσης: 
+| {{{field|input_service_completion_time|input type=tokens|max values=1|values from category=periods of time}}}
+|-
+<!-- Input_service_services: -->
+| {{{field|input_service_services|hidden}}}
+|-
+! Άλλες υπηρεσίες του φορέα: 
+| {{{field|input_service_related_services|input type=tokens}}}
+|-
+! Άλλοι εμπλεκόμενοι φορείς: 
+| {{{field|input_service_related_organizations|input type=tokens}}}
+|-
+! Μητρώα που τηρούνται: 
+| {{{field|input_service_registry|input type=text}}}
+|-
+! Περιγραφή μητρώων: 
+| {{{field|input_service_registry_description|input type=textarea}}}
+|}
+{{{end template}}}
+
+{{{for template|Δικαιολογητικό|multiple|display=spreadsheet|label=Απαραίτητα Δικαιολογητικά}}}
+{| class="formtable"
+! Α.Α.: 
+| {{{field|Α.Α.}}}
+|-
+! Απαραίτητο Δικαιολογητικό:
+| {{{field|Απαραίτητο Δικαιολογητικό}}}
+|-
+! Θεσμικό Πλαίσιο- Διοικητική Πρακτική: 
+| {{{field|Υποκείμενο υποβολής - Αυτεπάγγελτη Αναζήτηση}}}
+|}
+{{{end template}}}
+
+{{{for template|Βήμα Διαδικασίας|multiple|display=spreadsheet|label=Διαδικασίες}}}
+{| class="formtable"
+! Α.Α.: 
+| {{{field|Α.Α.}}}
+|-
+! Βήμα Διαδικασίας: 
+| {{{field|Βήμα Διαδικασίας}}}
+|-
+! Θεσμικό Πλαίσιο- Διοικητική Πρακτική: 
+| {{{field|Θεσμικό Πλαίσιο- Διοικητική Πρακτική}}}
+|-
+! Εμπλεκόμενος Αρμόδιος: 
+| {{{field|Εμπλεκόμενος Αρμόδιος}}}
+|-
+! Χρόνος Διεκπεραίωσης Βήματος: 
+| {{{field|Χρόνος Διεκπεραίωσης Βήματος}}}
+|}
+{{{end template}}}
+
+
+{{{standard input|summary}}}
+
+{{{standard input|minor edit}}} {{{standard input|watch}}}
+
+{{{standard input|save}}} {{{standard input|preview}}} {{{standard input|changes}}} {{{standard input|cancel}}}
+</includeonly>

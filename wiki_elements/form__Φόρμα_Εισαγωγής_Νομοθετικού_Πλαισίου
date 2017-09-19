@@ -1,0 +1,36 @@
+
+<noinclude>
+Αυτή είναι η φόρμα «Εισαγωγή Νομοθετικού Πλαισίου».
+Για να δημιουργήσετε σελίδα με αυτήν τη φόρμα, εισαγάγετε το όνομα της σελίδας παρακάτω.
+Αν υπάρχει ήδη σελίδα με αυτό το όνομα, θα μεταβείτε σε φόρμα για να επεξεργαστείτε αυτήν τη σελίδα.
+
+
+{{#forminput:form=Φόρμα Εισαγωγής Νομοθετικού Πλαισίου|placeholder=Επίσημη Ονομασία Νόμου}}
+
+</noinclude><includeonly>
+<div id="wikiPreview" style="display: none; padding-bottom: 25px; margin-bottom: 25px; border-bottom: 1px solid #AAAAAA;"></div>
+{{{for template|Νομοθετικό Πλαίσιο}}}
+{| class="formtable"
+! Αναγνωριστικό Νομοθετικού Πλαισίου: 
+| {{{field|legal_framework_identifier|hidden|deafault="{{#idprovider-increment:LF_|padding=9}} }}}
+|-
+! Τίτλος Νόμου: 
+| {{{field|legal_framework_name|default={{PAGENAME}}|restricted}}}
+|-
+! Περιγραφή Νόμου: 
+| {{{field|legal_framework_description|input type=textarea}}}
+|-
+! Λέξεις - Κλειδιά: 
+| {{{field|legal_framework_keyword|input type=tokens}}}
+|-
+! Αρχείο Νόμου: 
+| {{{field|legal_framework_reference_file|uploadable|default filename={{PAGENAME}} }}}
+|}
+{{{end template}}}
+
+{{{standard input|summary}}}
+
+{{{standard input|minor edit}}} {{{standard input|watch}}}
+
+{{{standard input|save}}} {{{standard input|preview}}} {{{standard input|changes}}} {{{standard input|cancel}}}
+</includeonly>

@@ -1,0 +1,83 @@
+
+<noinclude>
+Αυτό είναι το πρότυπο «Καταχωρημένη Υπηρεσία».
+Θα πρέπει να καλείται με την ακόλουθη μορφή:
+<pre>
+{{Καταχωρημένη Υπηρεσία
+|input_service_identifier=
+|input_service_name=
+|input_service_description=
+|input_service_competent_authority=
+|input_service_provided_by=
+|input_service_provided_to=
+|input_service_execution_method=
+|input_service_formal_framework_entry=
+|input_service_formal_framework_description=
+|input_service_input_entry=
+|input_service_input_description=
+|input_service_output=
+|input_service_cost=
+|input_service_completion_time=
+|input_service_related_services=
+|input_service_related_organizations=
+|input_service_keywords=
+|input_service_public_service_reference=
+|input_service_registry_entry=
+|input_service_registry_description=
+}}
+</pre>
+Επεξεργαστείτε τη σελίδα για να δείτε τον κώδικα του προτύπου
+</noinclude><includeonly>{| class="wikitable"
+<noinclude>
+! Αναγνωριστικό Υπηρεσίας
+| [[Service Identifier::{{{input_service_identifier|}}}]]
+</noinclude>
+|-
+! Τίτλος Υπηρεσίας
+| [[Service Name::{{{input_service_name|}}}]]
+|-
+! Εκδούσα Αρχή
+| [[Service Has Competent Authority::{{{input_service_competent_authority|}}}]]
+|-
+! Περιγραφή Υπηρεσίας
+| [[Service Description::{{{input_service_description|}}}]]
+|-
+! Παρέχεται από
+| {{#arraymap:{{{input_service_provided_by|}}}|,|x|[[Service Service Provider::x]]}}
+|-
+! Παρέχεται σε
+| {{#arraymap:{{{input_service_provided_to|}}}|,|x|[[Service Service User::x]]}}
+|-
+! Τρόπος Διεκπεραίωσης
+| {{#arraymap:{{{input_service_execution_method|}}}|,|x|[[Service Service Has Execution Method::x]]}}
+|-
+! Νομοθετικό Πλαίσιο
+| {{#arraymap:{{{input_service_formal_framework_entry|}}}|,|x|[[Service Has Formal Framework::x]]}}
+|-
+! Δικαιολογητικά
+| {{#arraymap:{{{input_service_input_entry|}}}|,|x|[[Service Has Input::x]]}}
+|-
+! Παραγόμενα Υπηρεσίας
+| {{#arraymap:{{{input_service_output|}}}|,|x|[[Service Produces::x]]}}
+|-
+! Κόστος σε ευρώ
+| {{#arraymap:{{{input_service_cost|}}}|,|x|[[Service Has Cost::x]]}}
+|-
+! Χρόνος Διεκπεραίωσης (εργάσιμες ημέρες)
+| [[Service Processing Time::{{{input_service_completion_time|}}}]]
+|-
+! Άλλες υπηρεσίες του φορέα
+| {{#arraymap:{{{input_service_services|}}}|,|x|[[Service Related::x]]}}
+|-
+! Άλλοι εμπλεκόμενοι φορείς
+| {{#arraymap:{{{input_service_related_organizations|}}}|,|x|[[Service Related Organizations::x]]}}
+|-
+! Λέξεις - Κλειδιά
+| {{#arraymap:{{{input_service_keywords|}}}|,|x|[[Service Keyword::x]]}}
+|-
+! Σύνδεσμος προς cpsv σελίδα υπηρεσίας
+| [[Links to CPSV Service::{{{input_service_public_service_reference|}}}]]
+|}
+
+[[Κατηγορία:Καταχωρημένη Υπηρεσία]]
+</includeonly>
