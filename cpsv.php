@@ -343,8 +343,8 @@ class CPSVSpawn{
       wfErrorLog('WIKITABLE1::::::'.$wikitables[0], '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
       wfErrorLog('WIKITABLE2::::::'.$wikitables[1], '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
 			
-      $evidence_table .= $wikitables['{{Δικαιολογητικό'].PHP_EOL."|}";
-			$steps_table .= $wikitables['{{Βήμα Διαδικασίας']. PHP_EOL."|}";
+      $evidence_table .= trim($wikitables['{{Δικαιολογητικό']).PHP_EOL."|}";
+			$steps_table .= trim($wikitables['{{Βήμα Διαδικασίας']).PHP_EOL."|}";
       
 			
 			
@@ -408,11 +408,11 @@ class CPSVSpawn{
     $wikitemplate_map=preg_split("/\|/", $template_string); 
     $wikitemplate_type=trim($wikitemplate_map[0]);
     wfErrorLog("TRIMMED:::::::".$wikitemplate_type, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
-
-    foreach($wikitemplate_map as $wikitemplate_map_entry){
-          $wikitable_line .= "|".mb_substr($wikitemplate_map_entry, mb_strpos($wikitemplate_map_entry, '=', NULL, 'UTF-8')+1).PHP_EOL;
-
-
+		
+		$wikitemplate_length=sizeof($wikitemplate_map);
+		
+    for($i=1; $i<=$wikitemplate_length-1; $i++){
+          $wikitable_line .= "|".mb_substr($wikitemplate_map[$i], mb_strpos($wikitemplate_map[$i], '=', NULL, 'UTF-8')+1).PHP_EOL;
     }
     
     return array('wikitemplate_type'=>$wikitemplate_type, 'wikitable_line'=>$wikitable_line);
@@ -433,7 +433,7 @@ class CPSVSpawn{
 
     while(mb_stristr(self::$content_text, "{{", false, 'UTF-8')){ // while we can detect template starting points in the wikipage
       $current_template_end=mb_strpos(self::$content_text, "}}");
-      $current_template_string=mb_substr(self::$content_text, 0, $current_template_end+2, 'UTF-8');
+      $current_template_string=mb_substr(self::$content_text, 0, $current_template_end, 'UTF-8');
       self::$content_text=mb_substr(self::$content_text, $current_template_end+2, null, 'UTF-8');
 //      $current_template_string=mb_stristr(self::$content_text, '}}', true, 'UTF-8');
 //      self::$content_text=mb_stristr(self::$content_text, '}}', false, 'UTF-8');
@@ -441,7 +441,7 @@ class CPSVSpawn{
     wfErrorLog("RET CONT TEXT:::::::".self::$content_text, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
       
 
-      $wikitable_line=CPSVSpawn::parse_wikitable_line_from_wikitemplate($current_template_string);
+		$wikitable_line=CPSVSpawn::parse_wikitable_line_from_wikitemplate($current_template_string);
     wfErrorLog("WIKITABLE LINE:::::::".$wikitable_line[1], '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log').PHP_EOL;
       $wikitables_array[$wikitable_line['wikitemplate_type']] .= $wikitable_line['wikitable_line'];
       
@@ -455,6 +455,5 @@ class CPSVSpawn{
 
     // parse first line and add to the map with the first line value as key
     // parse the lines using the parse template function.
-  }  
-        
+  }
 }
