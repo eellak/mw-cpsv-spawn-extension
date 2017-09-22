@@ -1,6 +1,6 @@
 <?php
 
-
+include_once 'assets/wiki_template_strings.php';
 /*
  * The extension configuration details take place here. For some reason the
  * extension.json method of defining the details would not work on the dev-wiki
@@ -76,28 +76,26 @@ class CPSVSpawn{
     $input_service_identifier_value='';
     $input_service_name_value='';
     $input_service_description_value='';
-    $input_service_competent_authority_value='';
+    $input_service_competent_authority_value=''; //create organization template
     $input_service_provided_by_value='';
-    $input_service_provided_to_value='';
+    $input_service_provided_to_value=''; //create agent templates
     $input_service_execution_method_value='';
     $input_service_formal_framework_value='';
 		$input_service_formal_framework_description_value='';
     $input_service_input_value='';
 		$input_service_input_description_value='';
-    $input_service_output_value='';
-    $input_service_cost_value='';
-    $input_service_completion_time_value='';
-    $input_service_related_services_value='';
-    $input_service_related_organizations_value='';
-    $input_service_keywords_value='';
-    $input_service_public_service_reference_value='';
-		$input_service_registry_value='';
-		$input_service_registry_description_value='';
+    $input_service_output_value=''; //create output templates
+    $input_service_cost_value=''; //create cost template
+    $input_service_completion_time_value=''; //period of time template
+    $input_service_related_services_value=''; //
+    $input_service_related_organizations_value=''; //
+    $input_service_keywords_value=''; //no input
+    $input_service_public_service_reference_value=''; //no input/no use finally
+		$input_service_registry_value=''; //output template
+		$input_service_registry_description_value=''; //description on the output template
     
     $wikitables_array=array();
-	
 		
-    
     /**
      * Cut out the Service template to parse its contents line by line
      */
@@ -107,7 +105,7 @@ class CPSVSpawn{
 		/**
 		 * Check if article is the same that triggered the PageContentSaveCommplete event
 		 */
-    if(!is_null($tmpl_start) && (self::$g_article_id===-1 || self::$g_article_id!=$article->getId()) && $flags===1+64){ //	EDIT_NEW + EDIT_AUTOSUMMARY
+    if(!is_null($tmpl_start) /*&& $tmpl_start*/ && (self::$g_article_id===-1 || self::$g_article_id!=$article->getId()) && $flags===1+64){ //	EDIT_NEW + EDIT_AUTOSUMMARY
 			self::$g_article_id=$article->getId();
       $service_template_map=preg_split("/\|/", mb_stristr(self::$content_text, "}}", true, 'UTF-8')); // The starting character for each template line
       if (sizeof($service_template_map)){
@@ -381,7 +379,16 @@ class CPSVSpawn{
        * ContentHandler has static methods for creating the content for a mw page.
        */
       $article_content=ContentHandler::makeContent('test content', $article_title);
-
+			
+			/**
+			 * WHERE THE SEMANTIC CPSV AND BACKGROUND TEMPLATES ARE CREATED AND ADDED
+			 */
+			
+			function cpsv_page_factory($template_string, $page_category){
+				$terms_array = mb_split($steps_table, $evidence_table);
+				$page_created=WikiPage::factory('');
+			}
+			
       /**
        * WikiPage has static factory methods for creating new WikiPages for any
        * namespace and of any type
@@ -396,7 +403,11 @@ class CPSVSpawn{
 //				ContentHandler::makeContent($content_text, $article->getTitle());
 				$new_content=new WikitextContent(self::$content_text);
 //        $artcl_status=$article->doEditContent(ContentHandler::makeContent($content_text, $article->getTitle()), 'test for template rewrite', EDIT_UPDATE, $baseRevId, $user);
-        $artcl_status=$article->doEditContent($new_content, 'test for template rewrite', 2); // 2 stands for EDIT_UPDATE. ref:	https://doc.wikimedia.org/mediawiki-core/1.27.1/php/group__Constants.html
+				
+				$diadikasies_compatible_page_title=Title::newFromText($input_service_name_value);
+				$diadikasies_compatible_page=WikiPage::factory($diadikasies_compatible_page_title);
+//        $artcl_status=$article->doEditContent($new_content, 'test for template rewrite', 2); // 2 stands for EDIT_UPDATE. ref:	https://doc.wikimedia.org/mediawiki-core/1.27.1/php/group__Constants.html
+        $artcl_status=$diadikasies_compatible_page->doEditContent($new_content, 'test for template rewrite', 2); // 2 stands for EDIT_UPDATE. ref:	https://doc.wikimedia.org/mediawiki-core/1.27.1/php/group__Constants.html
 //        wfErrorLog($artcl_status, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
 //        wfErrorLog("the page id: ".$article->getId().PHP_EOL, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
 //        wfErrorLog($article->getTitle(), '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
