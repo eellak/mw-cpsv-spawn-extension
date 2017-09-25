@@ -36,9 +36,6 @@ EOT;
 return $cpsv_public_service_template;
 }
 
-//function return_cpsv_legal_framework_template($legal_identifier, $legal_description)
-//
-
 function return_cpsv_agent_template($agent_identifier, $agent_name){
 $cpsv_agent_template = <<<EOT
 {{Agent
@@ -52,6 +49,38 @@ $cpsv_agent_template = <<<EOT
 EOT;
 
 return $cpsv_agent_template;
+}
+
+function return_cpsv_public_organization_template($organization_identifier, $organization_preferred_label, $organization_spatial){
+$cpsv_public_organization_template = <<<EOT
+{{Public Organization
+|identifier=$organization_identifier
+|preferred_label=$organization_preferred_label
+|spatial=$organization_spatial
+|plays_role=
+|uses=
+|has_address=
+}}
+EOT;
+
+return $cpsv_public_organization_template;
+}
+
+function return_cpsv_channel_template($channel_identifier, $channel_type, $contact_point){
+$cpsv_channel_template = <<<EOT
+{{Channel
+|identifier=$channel_identifier
+|is_owned_by=
+|type=$channel_type
+|has_contact_point=$contact_point
+|processing_time=
+|availability=
+|has_cost=
+|has_input=
+}}
+EOT;
+
+return $cpsv_channel_template;
 }
 
 function return_cpsv_evidence_template($evidence_identifier, $evidence_name){

@@ -41,6 +41,7 @@ class CPSVSpawn{
 	
 //  public static function onPageContentSave($article, $user, $content, $summary, $isMinor, $isWatch, $section, $flags, $revision, $status, $baseRevId) {    
 	private static $g_article_id=-1;
+  private static $original_input_template_text="";
   private static $content_text="";
 //	private $g_user;
 //	private $g_content;
@@ -52,6 +53,7 @@ class CPSVSpawn{
 		
     $service_template_map=array();
 		self::$content_text=ContentHandler::getContentText($content);
+		self::$original_input_template_text=ContentHandler::getContentText($content);
 		
     //self::$content_text='';
     
@@ -105,7 +107,7 @@ class CPSVSpawn{
 		/**
 		 * Check if article is the same that triggered the PageContentSaveCommplete event
 		 */
-    if(!is_null($tmpl_start) /*&& $tmpl_start*/ && (self::$g_article_id===-1 || self::$g_article_id!=$article->getId()) && $flags===1+64){ //	EDIT_NEW + EDIT_AUTOSUMMARY
+    if(!is_null($tmpl_start) && $tmpl_start && (self::$g_article_id===-1 || self::$g_article_id!=$article->getId()) && $flags===1+64){ //	EDIT_NEW + EDIT_AUTOSUMMARY
 			self::$g_article_id=$article->getId();
       $service_template_map=preg_split("/\|/", mb_stristr(self::$content_text, "}}", true, 'UTF-8')); // The starting character for each template line
       if (sizeof($service_template_map)){
@@ -368,35 +370,48 @@ class CPSVSpawn{
 					$evidence_table.PHP_EOL.
           "== Διαδικασίες == ".PHP_EOL.
 					$steps_table.PHP_EOL;
-							
-      
-      /**
-       * define the content of a test page to build... currently too buggy, but works.
-       */
-      $article_title=Title::newFromText('dave'.rand(0, 100000));
 
-      /**
-       * ContentHandler has static methods for creating the content for a mw page.
-       */
-      $article_content=ContentHandler::makeContent('test content', $article_title);
 			
 			/**
 			 * WHERE THE SEMANTIC CPSV AND BACKGROUND TEMPLATES ARE CREATED AND ADDED
 			 */
 			
-			function cpsv_page_factory($template_string, $page_category){
-				$terms_array = mb_split($steps_table, $evidence_table);
-				$page_created=WikiPage::factory('');
-			}
+//			function cpsv_page_factory($template_string, $page_category){
+//				$terms_array = mb_split($steps_table, $evidence_table);
+//				$page_created=WikiPage::factory('');
+//			}
 			
       /**
        * WikiPage has static factory methods for creating new WikiPages for any
        * namespace and of any type
        */
-      //$public_service_page=WikiPage::factory($article_title);
-      //$test_user=User::newFromId(2);
-
-//  		$content_text=$content_text.$input_service_description_value;
+      $public_service_template_page = WikiPage::factory($article_title);
+			$public_service_template_text = return_cpsv_public_service_template($input_service_identifier_value, $input_service_name_value, $input_service_description_value, $input_service_competent_authority_value, $input_service_formal_framework_value, $input_service_output_value, $input_service_completion_time_value, $input_service_cost_value);
+			$public_service_template_content = new WikitextContent($public_service_template_text);
+			$public_service_template_page->doEditContent($public_service_template_content, '', 1);
+			
+      $public_organization_template_page = WikiPage::factory($input_service_provided_by_value);
+			$public_organization_template_text = return_cpsv_public_organization_template($public_organization_identifier, $input_service_provided_by_value, $public_organization_default_spatial);
+			$public_organization_template_content = new WikitextContent($public_organization_template_text);
+      $public_organization_template_page = doEditContent($public_organization_template_content, '', 1);
+			
+			
+			
+//      $evidence_template_page = WikiPage::factory($article_title);
+//			$evidence_template_text = return_cpsv_evidence_template($evidence_identifier, $evidence_name);
+//		
+			/**
+			 * Break the outputs string by commas and 
+			 */
+			foreach(explode(',', $input_service_output_value) as $output_element){
+				$output_template_page = WikiPage::factory(trim($output_element));
+				$output_template_text = return_cpsv_output_template($output_identifier, $output_element);
+				$output_template_content = new WikitextContent($output_template_text);
+				$output_template_page->doEditContent($output_template_content, '', 1);
+			}
+			
+			
+			
   		self::$content_text=$diadikasies_page_output_content;//.$evidence_table;
       if($user){
 //        $public_service_page->doEditContent($article_content, $content_text, $flags, $baseRevId, $user);
@@ -404,16 +419,19 @@ class CPSVSpawn{
 				$new_content=new WikitextContent(self::$content_text);
 //        $artcl_status=$article->doEditContent(ContentHandler::makeContent($content_text, $article->getTitle()), 'test for template rewrite', EDIT_UPDATE, $baseRevId, $user);
 				
-				$diadikasies_compatible_page_title=Title::newFromText($input_service_name_value);
-				$diadikasies_compatible_page=WikiPage::factory($diadikasies_compatible_page_title);
 //        $artcl_status=$article->doEditContent($new_content, 'test for template rewrite', 2); // 2 stands for EDIT_UPDATE. ref:	https://doc.wikimedia.org/mediawiki-core/1.27.1/php/group__Constants.html
-        $artcl_status=$diadikasies_compatible_page->doEditContent($new_content, 'test for template rewrite', 2); // 2 stands for EDIT_UPDATE. ref:	https://doc.wikimedia.org/mediawiki-core/1.27.1/php/group__Constants.html
-//        wfErrorLog($artcl_status, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
-//        wfErrorLog("the page id: ".$article->getId().PHP_EOL, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
-//        wfErrorLog($article->getTitle(), '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
+				
+				
+				$diadikasies_compatible_page_title = Title::newFromText($input_service_name_value);
+				$diadikasies_compatible_page = WikiPage::factory($diadikasies_compatible_page_title);
+				$artcl_status=$diadikasies_compatible_page->doEditContent($new_content, '', 1); // 2 stands for EDIT_UPDATE. ref:	https://doc.wikimedia.org/mediawiki-core/1.27.1/php/group__Constants.html
+
       }
     }
 //    wfErrorLog($content_text, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
+		
+		
+		
 		
     return true;
   }
@@ -423,6 +441,20 @@ class CPSVSpawn{
 	}
   
   private static function parse_wikitable_line_from_wikitemplate($template_string){
+		
+		/*
+		 * before parsing the wikitable line, store a template page.
+		 */
+		if(stristr($template_string, "Δικαιολογητικό", false, 'UTF-8')){
+//				$template_header = mb_substr($wikitemplate_map[$i], 2);
+//				$template_header = trim($template_header);
+
+
+			$temp_title=Title::newFromText('evidence_'.str_pad(rand(0, 100000), 6, '0', STR_PAD_LEFT));
+			$table_template_page = WikiPage::factory($temp_title);
+			$table_template_content = new WikitextContent($template_string.'}}');
+			$able_template_page->doEditContent($table_template_content, '', 1);
+		}
     
     $wikitable_line="|-".PHP_EOL; // The serialized wiki table line for the current evidence table, to be appended to table instance
     $wikitemplate_map=preg_split("/\|/", $template_string); 
@@ -432,7 +464,8 @@ class CPSVSpawn{
 		$wikitemplate_length=sizeof($wikitemplate_map);
 		
     for($i=1; $i<=$wikitemplate_length-1; $i++){
-          $wikitable_line .= "|".mb_substr($wikitemplate_map[$i], mb_strpos($wikitemplate_map[$i], '=', NULL, 'UTF-8')+1).PHP_EOL;
+			$wikitable_line .= "|" . mb_substr($wikitemplate_map[$i], mb_strpos($wikitemplate_map[$i], '=', NULL, 'UTF-8')+1).PHP_EOL;
+			
     }
     
     return array('wikitemplate_type'=>$wikitemplate_type, 'wikitable_line'=>$wikitable_line);
