@@ -12,11 +12,11 @@ include_once 'assets/wiki_template_strings.php';
  */
 $wgExtensionCredits['other'][] = array(
   'path' => __FILE__,
-  'name' => 'CPSV class spawner',
+  'name' => 'CPSV Class/Page renderer',
   'author' => array( 'David Bromoiras of GFOSS' ),
   'url' => 'NULL',
   'descriptionmsg' => "Extension for spawning the necessary mediawiki and semantic mediawiki entities for compatibility with the CPSV model as well as creating all the semantic relations between these entitites.",
-  'version'  => 0.1,
+  'version'  => "0.1",
   'license-name' => 'GPL-2.0+',
 		
 );

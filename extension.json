@@ -1,10 +1,9 @@
 {
-  "name": "CPSV-Spawn",
-  "version": 1.0,
-  "author": "David Bromoiras",
-  "url": "https://www.gitlab.com/anchor-web/eellak_diadikasies_spawn_cpsv/",
+  "name": "CPSV Class/Page renderer",
+  "version": "1.0",
+  "author": "David Bromoiras of GFOSS'",
+  "url": "https://github.com/eellak/mw-cpsv-spawn-extension",
   "type": "other",
-  "licence-name": "GPL-3.0",
   "requires": {
     "MediaWiki": ">= 1.25"
 	},
