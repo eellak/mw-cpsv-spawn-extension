@@ -18,7 +18,6 @@ $wgExtensionCredits['other'][] = array(
   'descriptionmsg' => "Extension for spawning the necessary mediawiki and semantic mediawiki entities for compatibility with the CPSV model as well as creating all the semantic relations between these entitites.",
   'version'  => "0.1",
   'license-name' => 'GPL-2.0+',
-		
 );
 
 	/**
@@ -38,7 +37,6 @@ $wgExtensionCredits['other'][] = array(
 
 class CPSVSpawn{
 	
-	
 //  public static function onPageContentSave($article, $user, $content, $summary, $isMinor, $isWatch, $section, $flags, $revision, $status, $baseRevId) {    
 	private static $g_article_id=-1;
   private static $original_input_template_text="";
@@ -47,9 +45,7 @@ class CPSVSpawn{
 //	private $g_content;
 	
 	
-  public static function onPageContentSaveComplete($article, $user, $content, $summary, $isMinor, $isWatch, $section, $flags, $revision, $status, $baseRevId) {    
-  
-		//wfErrorLog('*****FLAGS'.$flags, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
+  public static function onPageContentSaveComplete($article, $user, $content, $summary, $isMinor, $isWatch, $section, $flags, $revision, $status, $baseRevId) {
 		
     $service_template_map=array();
 		self::$content_text=ContentHandler::getContentText($content);
@@ -84,8 +80,9 @@ class CPSVSpawn{
     $input_service_execution_method_value='';
     $input_service_formal_framework_value='';
 		$input_service_formal_framework_description_value='';
-    $input_service_input_value='';
-		$input_service_input_description_value='';
+    $input_service_main_document_value='';
+    $input_service_collateral_documents='';
+		$input_service_main_document_description_value='';
     $input_service_output_value=''; //create output templates
     $input_service_cost_value=''; //create cost template
     $input_service_completion_time_value=''; //period of time template
@@ -101,24 +98,29 @@ class CPSVSpawn{
     /**
      * Cut out the Service template to parse its contents line by line
      */
-    $tmpl_start=mb_strpos(self::$content_text, 'Καταχωρημένη Υπηρεσία', 0, 'UTF-8');
+    $tmpl_start=mb_strpos(self::$content_text, 'Καταχωρημένη Υπηρεσία (νέο)', 0, 'UTF-8');
     $tmpl_end=mb_strpos(self::$content_text, '}}');
 		
 		/**
 		 * Check if article is the same that triggered the PageContentSaveCommplete event
 		 */
     if(!is_null($tmpl_start) && $tmpl_start && (self::$g_article_id===-1 || self::$g_article_id!=$article->getId()) && $flags===1+64){ //	EDIT_NEW + EDIT_AUTOSUMMARY
-			wfErrorLog('TEMPLATE START::::::::::'.$tmpl_start, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
 			
+			wfDebugLog('cpsvex', 'TEMPLATE START::::::::::'.$tmpl_end);
 			self::$g_article_id=$article->getId();
+			wfDebugLog('cpsvex', 'article id'.self::$content_text);
       $service_template_map=preg_split("/\|/", mb_stristr(self::$content_text, "}}", true, 'UTF-8')); // The starting character for each template line
       if (sizeof($service_template_map)){
-//        wfErrorLog('*****size of map'.sizeof($service_template_map), '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
+        wfDebugLog('cpsvex', '*****size of map'.sizeof($service_template_map));
       }
+			else{
+        wfDebugLog('cpsvex', '*****size of map UNINITIALIZED');				
+			}
       
       foreach($service_template_map as $map_entry){
         
         $i=0;
+				wfDebugLog('cpsvex', 'dump of service template map: '.var_dump($service_template_map[i]).PHP_EOL);
 				
         /**
          * Check that the template field has indeed been 
@@ -153,6 +155,7 @@ class CPSVSpawn{
 				if(mb_stristr($map_entry, "input_service_competent_authority", false, 'UTF-8')){
 					
 					$input_service_competent_authority_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+					wfDebugLog('cpsvex', 'earlier'.var_dump($input_service_competent_authority_value));
 					
 //					$input_service_competent_authority_value = $map_entry;
 //					$diadikasies_page_serialized_template .= "|".$map_entry;
@@ -207,11 +210,19 @@ class CPSVSpawn{
 					
 				}
 				
-				if(mb_stristr($map_entry, "input_service_input", false, 'UTF-8')){
+				if(mb_stristr($map_entry, "input_service_input_main_document", false, 'UTF-8')){
 					
 //					$input_service_input_value = $map_entry;
 					
-          $input_service_input_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+          $input_service_main_document_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
+					
+				}
+				
+				if(mb_stristr($map_entry, "input_service_input_collateral_documents", false, 'UTF-8')){
+					
+//					$input_service_input_value = $map_entry;
+					
+          $input_service_collateral_documents_value=mb_substr($map_entry, mb_strpos($map_entry, '=', NULL, 'UTF-8')+1);
 					
 				}
 				
@@ -294,57 +305,133 @@ class CPSVSpawn{
 //				}
       }
 			
-			if(empty($input_service_competent_authority_value)){
-				$input_service_competent_authority_value='';
+//			if(empty($input_service_competent_authority_value)){
+//				$input_service_competent_authority_value='';
+//			}
+//			else{
+//				$input_service_competent_authority_value.=' ';
+//			}
+//	?????????????????????????
+
+			
+			// Populate the structures for the special page
+
+			// -- FRAMEWORKS --
+			
+			
+		if(!empty($input_service_output_value)){
+			foreach(explode(',', $input_service_output_value) as $output_element){
+				if(!empty(trim($output_element))){
+					wfErrorLog("PAGE_TITLE%%%::::::::".Title::newFromText(trim($output_element)), '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
+				}
 			}
-			else{
-				$input_service_competent_authority_value.=' ';
+		}
+			
+			
+			$not_found_framework_array=array();
+			foreach(explode(',', $input_service_formal_framework_value) as $formal_framework){
+				
+				//if(!found) add_to_the_array
+				$temp_title=Title::newFromText(trim($formal_framework));
+				
+				if( $temp_title->exists() ){
+				
+					$not_found_framework_array[]=array(trim($formal_framework), true);
+					
+				}
+				else{
+					
+					$not_found_framework_array[]=array(trim($formal_framework), false);
+					$framework_template_page = WikiPage::factory($temp_title);
+					$framework_template_text = '== bla bla bla =='.PHP_EOL;
+					$framework_template_content = new WikitextContent($framework_template_text);
+//					$framework_template_page->doEditContent($framework_template_content, '', 1);
+					if($framework_template_page->exists()){
+						wfDebugLog('cpsvex', 'created framework page');
+					}
+					else{
+						wfDebugLog('cpsvex', 'NOT created framework page');
+					}
+					
+				}
+			}
+			if (!empty($not_found_framework_array)){
+				$_SESSION['not_found_frameworks']=$not_found_framework_array;
 			}
 			
-			$diadikasies_page_serialized_template .= 
-//							'|input_service_name='.mb_substr($input_service_name_value, mb_strpos($input_service_name_value, '=', NULL, 'UTF-8')+1).PHP_EOL.
-//							mb_substr($input_service_name_value, mb_strpos($input_service_name_value, '=', NULL, 'UTF-8')+1).'|'.PHP_EOL.
-							"|Ταυτότητα Υπηρεσίας=".$input_service_identifier_value.PHP_EOL.
-							"|Τίτλος Υπηρεσίας=".$input_service_name_value.PHP_EOL.
-							"|Αρμόδια Αρχή=".$input_service_competent_authority_value.PHP_EOL.
-							"|Παρέχεται Από=".$input_service_provided_by_value.PHP_EOL.
-							"|Παρέχεται Σε=".$input_service_provided_to_value.PHP_EOL.
-							"|Νομοθετικό Πλαίσιο=".$input_service_formal_framework_value.PHP_EOL.
-							"|Εργάσιμες ημέρες κατά προσέγγιση=".$input_service_completion_time_value.PHP_EOL.
-							"|Κόστος σε ευρώ=".$input_service_cost_value.PHP_EOL.
-							'}}'.PHP_EOL;
 			
-      
-/**
- * The part of the program where the multiple templates for evidence and input
- * are parsed and serialized into strings to be appended to the page content
- */		
+			// -- EVIDENCE --
 			
-			$evidence_table="{| class='wikitable'
-				\n!Α/Α
-				\n!Απαραίτητα Δικαιολογητικά
-				\n!Κατάθεση από τον Αιτούντα / Αυτεπάγγελτη Αναζήτηση".PHP_EOL;
-      
+			$not_found_evidence_array=array();
+			foreach(explode(',', $input_service_main_document_value) as $document){
+				//if(!found) add_to_the_array
+				$temp_title=Title::newFromText($document);
+				
+				if(isset($temp_title) && !$temp_title->exists()){
+					$not_found_evidence_array[]=trim($document);
+					
+				}
+			}
+//			$_SESSION['not_found_evidence']=$not_found_evidence_array;
+			
+//			$not_found_evidence_array=array();
+			foreach(explode(',', $input_service_collateral_documents) as $document){
+				//if(!found) add_to_the_array
+				$temp_title=Title::newFromText($document);
+				
+				if(isset($temp_title) && !$temp_title->exists()){
+					$not_found_evidence_array[]=trim($document);
+				}
+			}
+			if (!empty($not_found_evidence_array)){
+				$_SESSION['not_found_evidence']=$not_found_evidence_array;
+			}
+			
+			
+			// -- ORGANIZATIONS --
+			
+			$not_found_organizations_array=array();
+			foreach(explode(',', $input_service_competent_authority_value) as $organization){
+				//if(!found) add_to_the_array
+				$temp_title=Title::newFromText($organization);
+				$not_found_organizations_array[]=trim($organization);
+				wfDebugLog('cpsvex', 'temp title-organization: '.$temp_title);
+				
+				if(isset($temp_title) && !$temp_title->exists()){
+					
+				}
+			}
+//			$_SESSION['not_found_evidence']=$not_found_evidence_array;
+			
+//			$not_found_evidence_array=array();
+			foreach(explode(',', $input_service_provided_by_value) as $document){
+				//if(!found) add_to_the_array
+				$temp_title=Title::newFromText($document);
+				$not_found_organizations_array[]=trim($document);
+				
+				if(isset($temp_title) && !$temp_title->exists()){
+				}
+			}
+			if (!empty($not_found_organizations_array)){
+				$_SESSION['not_found_organizations']=$not_found_organizations_array;
+			}
+			
+			$not_found_output_array=array();
+			foreach(explode(',', $input_service_output_value) as $output){
+				$temp_title=Title::newFromText($output);
+				$not_found_output_array[]=trim($output);
+			}
+			if(!empty($not_found_output_array)){
+				$_SESSION['not_found_output']=$not_found_output_array;
+			}
+			
+			
 			$steps_table="{| class='wikitable'
 				\n!Α/Α
 				\n!Βήμα Διαδικασίας
-				\n!Θεσμικό Πλαίσιο - Διοικητική Πρακτική
+				\n!Θεσμικό Πλαίσιο -Διοικητική Πρακτική
 				\n!Εμπλεκόμενος Αρμόδιος
 				\n!Χρόνος Διεκπεραίωσης Βήματος".PHP_EOL;      
-      
-      $evidence_template_labels=[
-          "Α.Α.=", 
-          "Απαραίτητο Δικαιολογητικό=", 
-          "Υποκείμενο υποβολής - Αυτεπάγγελτη Αναζήτηση="
-          ];
-      
-      $steps_template_labels=[
-          "Α.Α.=",
-          "Βήμα Διαδικασίας=",
-          "Θεσμικό Πλαίσιο- Διοικητική Πρακτική=",
-          "Εμπλεκόμενος Αρμόδιος=",
-          "Χρόνος Διεκπεραίωσης Βήματος=",
-          ];
             
       
       wfErrorLog('CONTENT TEXT::::::'.self::$content_text, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
@@ -355,34 +442,12 @@ class CPSVSpawn{
 			
       $evidence_table .= trim($wikitables['{{Δικαιολογητικό']).PHP_EOL."|}";
 			$steps_table .= trim($wikitables['{{Βήμα Διαδικασίας']).PHP_EOL."|}";
-      
-			
-			
-			$diadikasies_page_output_content=$diadikasies_page_serialized_template.PHP_EOL.
-          "== Περιγραφη Υπηρεσιας == ".PHP_EOL.
-					$input_service_description_value.PHP_EOL.
-          "=== Νομοθετικό Πλαίσιο === ".PHP_EOL.
-							$input_service_formal_framework_value.PHP_EOL.PHP_EOL.
-					$input_service_formal_framework_description_value.PHP_EOL.
-          "=== Τρόπος Διεκπεραίωσης === ".PHP_EOL.
-					$input_service_execution_method_value.PHP_EOL.
-          "=== Έντυπο που χρησιμοποιείται === ".PHP_EOL.
-					$input_service_execution_method_value.PHP_EOL.
-          "== Δικαιολογητικά == ".PHP_EOL.
-					$evidence_table.PHP_EOL.
-          "== Διαδικασίες == ".PHP_EOL.
-					$steps_table.PHP_EOL;
 
 			
 			/**
 			 * WHERE THE SEMANTIC CPSV AND BACKGROUND TEMPLATES ARE CREATED AND ADDED
 			 */
-			
-//			function cpsv_page_factory($template_string, $page_category){
-//				$terms_array = mb_split($steps_table, $evidence_table);
-//				$page_created=WikiPage::factory('');
-//			}
-			
+
       /**
        * WikiPage has static factory methods for creating new WikiPages for any
        * namespace and of any type
@@ -396,10 +461,15 @@ class CPSVSpawn{
 				$public_service_template_page->doEditContent($public_service_template_content, '', 1);
 //			}
 		
-    wfErrorLog("PROVIDED_BY:::::::::::".$input_service_provided_by_value, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
+    wfDebugLog('cpsvex', "PROVIDED_BY:::::::::::".$input_service_provided_by_value);
 			
-		if(!empty($input_service_provided_by_value)){
-			foreach(explode(',', $input_service_provided_by_value) as $provided_by_token){
+		
+//	CREATE THE BACKBONE PAGES FOR THE AUXILLIARY ENTITIES
+
+//	-- ORGANIZATIONS --
+		
+		if(!empty($not_found_organizations_array)){
+			foreach($not_found_organizations_array as $provided_by_token){
 				if(!empty(trim($provided_by_token))){
 					$public_organization_template_page_title = Title::newFromText(trim($provided_by_token));
 					$public_organization_template_page = WikiPage::factory($public_organization_template_page_title);
@@ -410,6 +480,7 @@ class CPSVSpawn{
 			}
 		}
 			
+		// --	SERVICES --
 			
 //      $evidence_template_page = WikiPage::factory($article_title);
 //			$evidence_template_text = return_cpsv_evidence_template($evidence_identifier, $evidence_name);
@@ -447,13 +518,16 @@ class CPSVSpawn{
 
 				}
 				else{
-					throw new Exception('Empty service name!');
+//					throw new Exception('Empty service name!');
 				}
+				
+				wfDebugLog('cpsvex', 'executin till here...');
+						
+//				header('Location: https://dev-diadikasies.ellak.gr/Ειδικό:CpsvFΕ');
+//				exit();
 //			}
     }
 //    wfErrorLog($content_text, '/var/www/sftp_webadmins/sites/dev-wiki.ellak.gr/public/log/file_debug.log');
-		
-    return true;
   }
 	
 	private static function template_string_append_closing_braces($template_serialized_string){
@@ -486,7 +560,6 @@ class CPSVSpawn{
 			$wikitable_line .= "|" . mb_substr($wikitemplate_map[$i], mb_strpos($wikitemplate_map[$i], '=', NULL, 'UTF-8')+1).PHP_EOL;
 			
     }
-    
     return array('wikitemplate_type'=>$wikitemplate_type, 'wikitable_line'=>$wikitable_line);
   }
 	
@@ -518,14 +591,6 @@ class CPSVSpawn{
       $wikitables_array[$wikitable_line['wikitemplate_type']] .= $wikitable_line['wikitable_line'];
       
     }
-    return $wikitables_array;
-
-
-    // detect each template's boundaries {{ }}
-
-
-
-    // parse first line and add to the map with the first line value as key
-    // parse the lines using the parse template function.
+//    return $wikitables_array;
   }
 }

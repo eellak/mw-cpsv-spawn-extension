@@ -3,15 +3,31 @@
   "version": "1.0",
   "author": "David Bromoiras of GFOSS'",
   "url": "https://github.com/eellak/mw-cpsv-spawn-extension",
-  "type": "other",
+  "type": "specialpage",
   "requires": {
     "MediaWiki": ">= 1.25"
 	},
+	"GroupPermissions": {
+		"*": {
+			"access_fill_entities": true
+		},
+		"staff": {
+			"access_fill_entities": true
+		}
+	},
+	"AvailableRights": [
+		"access_fill_entities"
+	],
 	"AutoloadClasses": {
-		"CPSVSpawn": "cpsv.php"
+		"CPSVSpawn": "cpsv.php",
+		"SpecialCpsvFE": "SpecialCpsvFE.php",
+		"SpecialFillEntities": "RedirectCPSV.php"
 	},
 	"Hooks": {
 		"PageContentSaveComplete": "CPSVSpawn::onPageContentSaveComplete"
+	},
+	"SpecialPages": {
+		"CpsvFΕ": "SpecialCpsvFE"
 	},
 "manifest_version": 1
 }

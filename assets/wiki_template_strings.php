@@ -2,12 +2,12 @@
 
 
 
-function return_cpsv_public_service_template($service_identifier, $service_name, $service_description, $competent_authority, $formal_framework, $output,$completion_time, $cost){
+function return_cpsv_public_service_template($service_name){
 $cpsv_public_service_template = <<<EOT
 {{Public Service
-|identifier=$service_identifier
-|name=$service_name
-|description=$service_description
+|identifier={{#show: $service_name | ?Service Identifier}}
+|name=CPSV $service_name
+|description={{#show: $service_name | ?Service Description}}
 |keyword=
 |sector=
 |type=
@@ -17,19 +17,19 @@ $cpsv_public_service_template = <<<EOT
 |requires=
 |related=
 |has_criterion=
-|has_competent_authority=$competent_authority
-|has_service_provider=
-|has_service_user=
+|has_competent_authority={{#show: $service_name | ?Service Has Competent Authority}}
+|has_service_provider={{#show: $service_name | ?Service Service Provider}}
+|has_service_user={{#show: $service_name | ?Service Service User}}
 |has_participation=
-|has_input=
-|has_formal_framework=$formal_framework
-|produces=$output
+|has_input={{#show: $service_name | ?Service Has Main Document}},{{#show: $service_name | ?Service Has Collateral Documents}}
+|has_formal_framework={{#show: $service_name | ?Service Has Formal Framework}}
+|produces={{#show: $service_name | ?Service Produces}}
 |follows=
 |spatial_temporal=
 |has_contact_point=
 |has_channel=
-|processing_time=$completion_time
-|has_cost=$cost
+|processing_time={{#show: $service_name | ?Service Processing Time}}
+|has_cost={{#show: $service_name | ?Service Has Cost}}
 }}
 EOT;
 
@@ -51,6 +51,10 @@ EOT;
 return $cpsv_agent_template;
 }
 
+//function return_cpsv_framework_template(){
+//	
+//}
+
 function return_cpsv_public_organization_template($organization_identifier, $organization_preferred_label, $organization_spatial){
 $cpsv_public_organization_template = <<<EOT
 {{Public Organization
@@ -64,6 +68,20 @@ $cpsv_public_organization_template = <<<EOT
 EOT;
 
 return $cpsv_public_organization_template;
+}
+
+function return_cpsv_cost_template($cost_identifier, $cost_value){
+$cpsv_cost_template = <<<EOT
+{{Cost
+|identifier=$cost_identifier
+|value=$cost_value
+|currency=EUR
+|description=
+|is_defined_by=
+}}
+EOT;
+
+return $cpsv_cost_template;
 }
 
 function return_cpsv_channel_template($channel_identifier, $channel_type, $contact_point){
@@ -109,6 +127,42 @@ $cpsv_output_template = <<<EOT
 EOT;
 	
 return $cpsv_output_template;
+}
+
+function return_public_public_service_page_sample($service_name){
+$public_public_service_page = <<<EOT
+{{Υπηρεσία Δημοσίου
+|Τίτλος Υπηρεσίας={{#show: $service_name | ?Service Name}}
+|Αρμόδια Αρχή={{#show: $service_name | ?Service Has Competent Authority}}
+|Παρέχεται Από={{#show: $service_name | ?Service Service Provider}}
+|Παρέχεται Σε={{#show: $service_name | ?Service Service User}}
+|Νομοθετικό Πλαίσιο={{#show: $service_name | ?Service Has Formal Framework}}
+|Εργάσιμες ημέρες κατά προσέγγιση={{#show: $service_name | ?Service Processing Time}}
+|Κόστος σε ευρώ={{#show: $service_name | ?Service Has Cost}}
+}}
+
+== Περιγραφη Υπηρεσιας == 
+{{#show: $service_name | ?Service Description}}
+				
+=== Νομοθετικό Πλαίσιο === 
+{{#show: $service_name | ?Service Has Formal Framework}}
+
+=== Τρόπος Διεκπεραίωσης === 
+{{#show: $service_name | ?Service Has Execution Method}}
+				
+=== Έντυπο που χρησιμοποιείται === ".PHP_EOL.
+{{#show: $service_name | ?Service Has Main Document}}
+{{#show: $service_name | ?Service Has Main Document Description}}
+
+== Δικαιολογητικά == 
+{{#show: $service_name | ?Service Has Collateral Documents}}
+EOT;
+
+//{{#ask:
+//here to append the steps				
+//}}
+
+return $public_public_service_page;	
 }
 //
 //function return_cpsv_cost_template(){
